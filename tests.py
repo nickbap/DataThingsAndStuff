@@ -24,6 +24,7 @@ class TestApp(unittest.TestCase):
         response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
+        self.assertIn("Data Things & Stuff", response.get_data(as_text=True))
 
 
 class TestDevelopmentAppConfig(unittest.TestCase):
