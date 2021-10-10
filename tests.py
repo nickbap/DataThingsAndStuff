@@ -26,6 +26,12 @@ class TestApp(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Data Things & Stuff", response.get_data(as_text=True))
 
+    def test_about_route(self):
+        response = self.client.get("/about")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("About", response.get_data(as_text=True))
+
 
 class TestDevelopmentAppConfig(unittest.TestCase):
     def setUp(self):
