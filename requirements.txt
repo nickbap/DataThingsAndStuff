@@ -1,3 +1,5 @@
 Flask
 flask-debugtoolbar
+flask-migrate
+flask-sqlalchemy
 python-dotenv

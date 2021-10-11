@@ -9,3 +9,6 @@ coverage:
 
 all-tests:
 	coverage run -m unittest tests.py && coverage report -m && coverage html
+
+dev-sql:
+	sqlite3 dtns.db
