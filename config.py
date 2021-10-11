@@ -11,23 +11,11 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "ISolemnlySwearImUpToNoGood"
 
 
-class DevelopmentConfig(Config):
-    DEBUG = True
-    ENV = "development"
-
-
-class ProductionConfig(Config):
-    DEBUG = False
-    ENV = "production"
-
-
 class TestingConfig(Config):
-    ENV = "testing"
     TESTING = True
 
 
 config = {
-    "development": DevelopmentConfig,
-    "production": ProductionConfig,
+    "config": Config,
     "testing": TestingConfig,
 }

@@ -17,8 +17,8 @@ class TestApp(unittest.TestCase):
         self.app_context.pop()
 
     def test_app_testing_config(self):
+        self.assertFalse(current_app.config["DEBUG"])
         self.assertTrue(current_app.config["TESTING"])
-        self.assertEqual(current_app.config["ENV"], "testing")
 
     def test_home_route(self):
         response = self.client.get("/")
@@ -33,9 +33,9 @@ class TestApp(unittest.TestCase):
         self.assertIn("About", response.get_data(as_text=True))
 
 
-class TestDevelopmentAppConfig(unittest.TestCase):
+class TestAppConfig(unittest.TestCase):
     def setUp(self):
-        self.app = create_app("development")
+        self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
         self.client = self.app.test_client()
@@ -43,23 +43,9 @@ class TestDevelopmentAppConfig(unittest.TestCase):
     def tearDown(self):
         self.app_context.pop()
 
-    def test_app_development_config(self):
-        self.assertTrue(current_app.config["DEBUG"])
-        self.assertEqual(current_app.config["ENV"], "development")
-
-
-class TestProductionAppConfig(unittest.TestCase):
-    def setUp(self):
-        self.app = create_app("production")
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        self.client = self.app.test_client()
-
-    def tearDown(self):
-        self.app_context.pop()
-
-    def test_app_production_config(self):
+    def test_app_config(self):
         self.assertFalse(current_app.config["DEBUG"])
+        self.assertFalse(current_app.config["TESTING"])
         self.assertEqual(current_app.config["ENV"], "production")
 
 

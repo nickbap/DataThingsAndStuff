@@ -1,5 +1,5 @@
 dev:
-	python run.py development
+	FLASK_ENV=development flask run
 
 tests:
 	python tests.py
