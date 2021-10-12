@@ -1,5 +1,8 @@
+email_validator
 Flask
 flask-debugtoolbar
+flask-login
 flask-migrate
 flask-sqlalchemy
+Flask-WTF
 python-dotenv

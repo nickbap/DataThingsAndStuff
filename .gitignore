@@ -144,3 +144,5 @@ cython_debug/
 .DS_Store
 
 dtns.db
+
+scratch_pad.py

@@ -1,9 +1,12 @@
 from datetime import datetime
 
+from flask_login import UserMixin
+
 from dtns import db
+from dtns import login_manager
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -14,3 +17,8 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.id} {self.username}>"
+
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))

@@ -1,0 +1,42 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<h1>Admin</h1>
+<div id="admin">
+    {% if current_user.is_anonymous %}
+    <div class="container-fluid d-flex">
+        <div class="row justify-content-center text-center w-100">
+            <div class="col-md-3 col-sm-6">
+                <h2>Login</h2>
+                <form method="POST" action="{{ url_for('main.admin') }}">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <div class="form-group mb-1">
+                            {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-md is-invalid") }}
+                            <div class="invalid-feedback font-weight-bold">
+                                {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.email(class="form-control form-control-md", placeholder="Email") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group mb-1">
+                            {{ form.password(class="form-control form-control-md", placeholder="Password") }}
+                        </div>
+                        {{ form.login(class="btn btn-light") }}
+                    </fieldset>
+                </form>
+                </h4>
+            </div>
+        </div>
+    </div>
+    {% elif current_user.is_authenticated %}
+    <div>
+        Hi {{ current_user.username }}! There will be posts here one day...
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
