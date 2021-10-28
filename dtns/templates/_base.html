@@ -27,6 +27,9 @@
                             <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
                         </li>
                         {% if current_user.is_authenticated %}
+                        <li id="admin-nav" class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.admin') }}">Admin</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
                         </li>

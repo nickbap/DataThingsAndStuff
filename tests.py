@@ -135,6 +135,7 @@ class TestAppAuth(unittest.TestCase):
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
+        self.assertNotIn('id="admin-nav"', response_text)
         self.assertIn("Login", response_text)
         self.assertNotIn(self.username, response_text)
         self.assertNotIn("New Post", response_text)
@@ -147,6 +148,7 @@ class TestAppAuth(unittest.TestCase):
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
+        self.assertIn('id="admin-nav"', response_text)
         self.assertIn("Welcome to Data Things and Stuff!", response_text)
         self.assertIn("success", response_text)
         self.assertIn("New Post", response_text)
@@ -163,6 +165,7 @@ class TestAppAuth(unittest.TestCase):
             "Something went wrong with your login! Please try again.", response_text
         )
         self.assertIn("danger", response_text)
+        self.assertNotIn('id="admin-nav"', response_text)
         self.assertNotIn("New Post", response_text)
         self.assertNotIn('id="post-list"', response_text)
 
@@ -174,6 +177,7 @@ class TestAppAuth(unittest.TestCase):
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
+        self.assertIn('id="admin-nav"', response_text)
         self.assertNotIn("Login", response_text)
         self.assertIn(self.username, response_text)
 
@@ -185,6 +189,7 @@ class TestAppAuth(unittest.TestCase):
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
+        self.assertNotIn('id="admin-nav"', response_text)
         self.assertNotIn("Logout", response_text)
         self.assertNotIn("New Post", response_text)
         self.assertNotIn('id="post-list"', response_text)
@@ -194,6 +199,7 @@ class TestAppAuth(unittest.TestCase):
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
+        self.assertNotIn('id="admin-nav"', response_text)
         self.assertNotIn("Logout", response_text)
         self.assertNotIn("New Post", response_text)
         self.assertNotIn('id="post-list"', response_text)
