@@ -38,7 +38,9 @@
         Hi {{ current_user.username }}! There will be posts here one day...
         <div class="py-3">
             <div class="btn-group py-3" role="group">
-                <button type="button" class="btn btn-secondary">New Post</button>
+                <button type="button" class="btn btn-secondary">
+                    <a class="text-reset text-decoration-none" href="{{ url_for('main.create') }}">New Post</a>
+                </button>
             </div>
             <div id="post-list">
             {% if posts %}

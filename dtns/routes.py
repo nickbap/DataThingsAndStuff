@@ -7,6 +7,7 @@ from flask import url_for
 from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
+from flask_login.utils import login_required
 from werkzeug.security import check_password_hash
 
 from dtns.data import temp_posts
@@ -44,6 +45,12 @@ def admin():
         else:
             flash("Something went wrong with your login! Please try again.", "danger")
     return render_template("admin.html", form=form, posts=posts)
+
+
+@main.route("/create")
+@login_required
+def create():
+    return render_template("create.html")
 
 
 @main.route("/logout")

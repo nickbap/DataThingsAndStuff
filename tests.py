@@ -204,6 +204,21 @@ class TestAppAuth(unittest.TestCase):
         self.assertNotIn("New Post", response_text)
         self.assertNotIn('id="post-list"', response_text)
 
+    def test_create_page_unauthenticated_user(self):
+        response = self.client.get("/create")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_create_page_authenticated_user(self):
+        data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=data, follow_redirects=True)
+
+        response = self.client.get("/create")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("New Post", response_text)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
