@@ -218,6 +218,8 @@ class TestAppAuth(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("New Post", response_text)
+        self.assertIn("Post Editor", response_text)
+        self.assertIn("Post Preview", response_text)
 
 
 if __name__ == "__main__":

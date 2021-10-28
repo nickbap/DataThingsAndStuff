@@ -11,6 +11,7 @@ from flask_login.utils import login_required
 from werkzeug.security import check_password_hash
 
 from dtns.data import temp_posts
+from dtns.forms import BlogPostForm
 from dtns.forms import LoginForm
 from dtns.models import User
 
@@ -50,7 +51,8 @@ def admin():
 @main.route("/create")
 @login_required
 def create():
-    return render_template("create.html")
+    form = BlogPostForm()
+    return render_template("create.html", form=form)
 
 
 @main.route("/logout")

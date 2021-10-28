@@ -1,5 +1,64 @@
 {% extends '_base.html' %}
 
+{% block extra_css %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.2.0/markdown-it.min.js"
+    integrity="sha512-cTQeM/op796Fp1ZUxfech8gSMLT/HvrXMkRGdGZGQnbwuq/obG0UtcL04eByVa99qJik7WlnlQOr5/Fw5B36aw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <h1>New Post</h1>
+<div class="row">
+    <div class="col-sm-6 py-3">
+        <h2>Post Editor</h2>
+        <div>
+            <form method="POST" action="{{ url_for('main.create') }}">
+                {{ form.hidden_tag() }}
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    {{ form.hidden_tag() }}
+                    {{ form.source(id="blog-post-editor", class="form-control", only_input=True, rows=30) }}
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-6 py-3">
+        <h2>Post Preview</h2>
+        <div id="blog-post-preview">
+            <p>Preview goes here.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+    var textarea = document.getElementById('blog-post-editor');
+    var preview = document.getElementById('blog-post-preview');
+
+    var md = window.markdownit().set({
+        breaks: true,
+        highlight: function (str, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+                try {
+                    return hljs.highlight(str, {
+                        language: lang
+                    }).value;
+                } catch (__) {}
+            }
+
+            return ''; // use external default escaping
+        }
+    });
+
+    textarea.addEventListener('input', updateValue);
+
+    function updateValue(e) {
+        preview.innerHTML = md.render(e.target.value);
+    }
+</script>
 {% endblock %}
