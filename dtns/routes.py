@@ -4,10 +4,12 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
+from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
 from werkzeug.security import check_password_hash
 
+from dtns.data import temp_posts
 from dtns.forms import LoginForm
 from dtns.models import User
 
@@ -26,6 +28,7 @@ def about():
 
 @main.route("/admin", methods=["GET", "POST"])
 def admin():
+    posts = temp_posts if current_user.is_authenticated else None
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -40,7 +43,7 @@ def admin():
             )
         else:
             flash("Something went wrong with your login! Please try again.", "danger")
-    return render_template("admin.html", form=form)
+    return render_template("admin.html", form=form, posts=posts)
 
 
 @main.route("/logout")

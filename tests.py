@@ -137,6 +137,8 @@ class TestAppAuth(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Login", response_text)
         self.assertNotIn(self.username, response_text)
+        self.assertNotIn("New Post", response_text)
+        self.assertNotIn('id="post-list"', response_text)
 
     def test_successful_admin_login(self):
         data = {"email": self.email, "password": self.password}
@@ -147,6 +149,8 @@ class TestAppAuth(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Welcome to Data Things and Stuff!", response_text)
         self.assertIn("success", response_text)
+        self.assertIn("New Post", response_text)
+        self.assertIn('id="post-list"', response_text)
 
     def test_unsuccessful_admin_login(self):
         data = {"email": self.email, "password": "aWrongPassWord"}
@@ -159,6 +163,8 @@ class TestAppAuth(unittest.TestCase):
             "Something went wrong with your login! Please try again.", response_text
         )
         self.assertIn("danger", response_text)
+        self.assertNotIn("New Post", response_text)
+        self.assertNotIn('id="post-list"', response_text)
 
     def test_admin_page_for_autheticated_user(self):
         data = {"email": self.email, "password": self.password}
@@ -180,6 +186,8 @@ class TestAppAuth(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("Logout", response_text)
+        self.assertNotIn("New Post", response_text)
+        self.assertNotIn('id="post-list"', response_text)
 
     def test_successful_logout_for_unauthenticated_user(self):
         response = self.client.get("/logout", follow_redirects=True)
@@ -187,6 +195,8 @@ class TestAppAuth(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("Logout", response_text)
+        self.assertNotIn("New Post", response_text)
+        self.assertNotIn('id="post-list"', response_text)
 
 
 if __name__ == "__main__":
