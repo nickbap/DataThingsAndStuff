@@ -36,7 +36,11 @@ def about():
 
 @main.route("/admin", methods=["GET", "POST"])
 def admin():
-    posts = temp_posts if current_user.is_authenticated else None
+    if current_user.is_authenticated:
+        posts = Post.query.all()
+    else:
+        posts = None
+
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
