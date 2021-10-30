@@ -5,4 +5,5 @@ flask-login
 flask-migrate
 flask-sqlalchemy
 Flask-WTF
+markdown-it-py
 python-dotenv

@@ -12,10 +12,13 @@ from flask_login import logout_user
 from flask_login.utils import login_required
 from werkzeug.security import check_password_hash
 
+from dtns import db
 from dtns.data import temp_posts
 from dtns.forms import BlogPostForm
 from dtns.forms import LoginForm
+from dtns.models import Post
 from dtns.models import User
+from dtns.utils import md
 
 main = Blueprint("main", __name__)
 
@@ -51,11 +54,24 @@ def admin():
     return render_template("admin.html", form=form, posts=posts)
 
 
-@main.route("/create")
+@main.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
     today = date.today()
     form = BlogPostForm()
+    if form.validate_on_submit():
+        post = Post(
+            title=form.title.data,
+            slug=form.slug.data,
+            description=form.description.data,
+            source=form.source.data,
+            html=md.render(form.source.data),
+        )
+        db.session.add(post)
+        db.session.commit()
+
+        flash("Your Post has been created!", "success")
+        return redirect(url_for("main.admin"))
     return render_template("create.html", form=form, today=today)
 
 

@@ -65,6 +65,7 @@ class TestPostModel(unittest.TestCase):
         self.app = create_app("testing")
         self.app_context = self.app.app_context()
         self.app_context.push()
+        self.client = self.app.test_client()
         db.create_all()
 
         self.title = "A Test Title"
@@ -142,6 +143,35 @@ class TestPostModel(unittest.TestCase):
 
         self.assertTrue(isinstance(post.created_at, datetime))
         self.assertTrue(isinstance(post.updated_at, datetime))
+
+    def test_create_post_from_editor(self):
+        email = "test@test.com"
+        username = "test_user"
+        password = "test_password"
+        password_hash = generate_password_hash(password)
+        u = User(email=email, username=username, password=password_hash)
+        db.session.add(u)
+        db.session.commit()
+        user_data = {"email": email, "password": password}
+        response = self.client.post("/admin", data=user_data, follow_redirects=True)
+
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        response = self.client.post("/create", data=post_data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("success", response_text)
+
+        post = Post.query.all()
+
+        self.assertIsNotNone(post)
+        self.assertEqual(len(post), 1)
+        self.assertEqual(self.title, post[0].title)
 
 
 class TestUserModel(unittest.TestCase):
