@@ -26,7 +26,7 @@
                         {{ form.slug.label(class="form-control-label p-1") }}
                         {{ form.slug(id="blog-post-slug", class="form-control") }}
                         {{ form.description.label(class="form-control-label p-1") }}
-                        {{ form.description(class="form-control") }}
+                        {{ form.description(id="blog-post-description", class="form-control") }}
                         {{ form.source.label(class="form-control-label p-1") }}
                         {{ form.source(id="blog-post-editor", class="form-control", only_input=True, rows=30) }}
                         {{ form.submit(class="btn btn-primary m-2") }}
@@ -36,7 +36,15 @@
         </div>
         <div class="col-sm-6 py-3">
             <h2>Post Preview</h2>
-            <div id="blog-post-preview">
+            <div id="blog-home-page-preview" class="pt-5 pb-4 border-bottom">
+                <div class="border p-4 mb-2 shadow-sm">
+                    <h3 id="blog-preview-title" class="mb-0">Post Title</h3>
+                    <p class="mb-1 text-muted">{{ today.strftime('%B %-d, %Y') }}</p>
+                    <p id="blog-preview-description" class="card-text mb-auto">Post Description...</p>
+                    <a href="#">Continue reading</a>
+                </div>
+            </div>
+            <div id="blog-post-preview" class="p-3">
                 <p>Preview goes here.</p>
             </div>
         </div>
@@ -84,10 +92,28 @@
             .replace(/\-\-+/g, '-') // replace multiple '-' with single '-'
     };
 
-    titleInput.addEventListener('input', slugifyTitle);
+    titleInput.addEventListener('input', (e) => {
+        slugifyTitle(e);
+        updatePreviewTitle(e);
+    });
 
     function slugifyTitle(e) {
         slugInput.value = slugify(e.target.value);
-    }
+    };
+
+    function updatePreviewTitle(e) {
+        titlePreview.innerHTML = e.target.value;
+    };
+
+    var titlePreview = document.getElementById('blog-preview-title');
+
+    var descriptionInput = document.getElementById('blog-post-description');
+    var descriptionPreview = document.getElementById('blog-preview-description');
+
+    descriptionInput.addEventListener('input', updatePreviewDescription);
+
+    function updatePreviewDescription(e) {
+        descriptionPreview.innerHTML = e.target.value;
+    };
 </script>
 {% endblock %}

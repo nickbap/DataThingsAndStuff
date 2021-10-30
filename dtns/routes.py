@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import Blueprint
 from flask import flash
 from flask import redirect
@@ -52,8 +54,9 @@ def admin():
 @main.route("/create")
 @login_required
 def create():
+    today = date.today()
     form = BlogPostForm()
-    return render_template("create.html", form=form)
+    return render_template("create.html", form=form, today=today)
 
 
 @main.route("/logout")
