@@ -14,5 +14,8 @@ class LoginForm(FlaskForm):
 
 
 class BlogPostForm(FlaskForm):
-    source = TextAreaField("What would you like to share?", validators=[DataRequired()])
+    title = StringField("Post Title", validators=[DataRequired()])
+    slug = StringField("Slug", validators=[DataRequired()])
+    description = StringField("Post Description", validators=[DataRequired()])
+    source = TextAreaField("Post", validators=[DataRequired()])
     submit = SubmitField("Submit")

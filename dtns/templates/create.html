@@ -21,8 +21,15 @@
                     {{ form.csrf_token }}
                     <div class="form-group">
                         {{ form.hidden_tag() }}
+                        {{ form.title.label(class="form-control-label p-1") }}
+                        {{ form.title(id="blog-post-title", class="form-control") }}
+                        {{ form.slug.label(class="form-control-label p-1") }}
+                        {{ form.slug(id="blog-post-slug", class="form-control") }}
+                        {{ form.description.label(class="form-control-label p-1") }}
+                        {{ form.description(class="form-control") }}
+                        {{ form.source.label(class="form-control-label p-1") }}
                         {{ form.source(id="blog-post-editor", class="form-control", only_input=True, rows=30) }}
-                        {{ form.submit(class="btn btn-primary") }}
+                        {{ form.submit(class="btn btn-primary m-2") }}
                     </div>
                 </form>
             </div>
@@ -57,10 +64,30 @@
         }
     });
 
-    textarea.addEventListener('input', updateValue);
+    textarea.addEventListener('input', updatePreviewValue);
 
-    function updateValue(e) {
+    function updatePreviewValue(e) {
         preview.innerHTML = md.render(e.target.value);
+    }
+
+    var titleInput = document.getElementById('blog-post-title');
+    var slugInput = document.getElementById('blog-post-slug');
+
+    // https://gist.github.com/tarciozemel/ab483d44fb5333b866220a861d7114d3
+    function slugify(text) {
+        return text.toString().toLowerCase().trim()
+            .normalize('NFD') // separate accent from letter
+            .replace(/[\u0300-\u036f]/g, '') // remove all separated accents
+            .replace(/\s+/g, '-') // replace spaces with -
+            .replace(/&/g, '-and-') // replace & with 'and'
+            .replace(/[^\w\-]+/g, '') // remove all non-word chars
+            .replace(/\-\-+/g, '-') // replace multiple '-' with single '-'
+    };
+
+    titleInput.addEventListener('input', slugifyTitle);
+
+    function slugifyTitle(e) {
+        slugInput.value = slugify(e.target.value);
     }
 </script>
 {% endblock %}
