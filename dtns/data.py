@@ -14,6 +14,7 @@ temp_posts = [
         "html": "<h1>1 html</h1>",
         "title": "Assume Edge Serve Tax Bank Authority",
         "slug": "assume-edge-serve-tax-bank-authority",
+        "description": "A short description describing post 1.",
     },
     {
         "id": 2,
@@ -25,6 +26,7 @@ temp_posts = [
         "html": "<h1>2 html</h1>",
         "title": "Watch Particularly Economic Thank Start",
         "slug": "watch-particularly-economic-thank-start",
+        "description": "A short description describing post 2.",
     },
     {
         "id": 3,
@@ -36,6 +38,7 @@ temp_posts = [
         "html": "<h1>3 html</h1>",
         "title": "Bit Huge World Blue Feel Until Provide Cover",
         "slug": "bit-huge-world-blue-feel-until-provide-cover",
+        "description": "A short description describing post 3.",
     },
     {
         "id": 4,
@@ -47,6 +50,7 @@ temp_posts = [
         "html": "<h1>4 html</h1>",
         "title": "Yes Development Remember Environmental Really Information Him",
         "slug": "yes-development-remember-environmental-really-information-him",
+        "description": "A short description describing post 4.",
     },
     {
         "id": 5,
@@ -58,5 +62,6 @@ temp_posts = [
         "html": "<h1>5 html</h1>",
         "title": "Guess Throw Fly Fact Opportunity Watch Continue",
         "slug": "guess-throw-fly-fact-opportunity-watch-continue",
+        "description": "A short description describing post 5.",
     },
 ]

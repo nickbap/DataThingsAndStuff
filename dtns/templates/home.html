@@ -1,7 +1,63 @@
 {% extends '_base.html' %}
 
 {% block content %}
+<div class="bg-secondary d-flex flex-column justify-content-center align-items-center mb-4">
+    <div class="p-4">
+        <h1 class="text-white">Data Things & Stuff</h1>
+        <div class="p-1">
+            <ul class="p-0 d-flex justify-content-evenly">
+                <li style="display: inline;">
+                    <a href="https://www.linkedin.com/in/nickolusmatthewbautista/" target="_blank"
+                        rel="noopener noreferrer">
+                        <img src="{{ url_for('static', filename='icons/iconmonstr-linkedin-3.svg') }}" alt="linkedin">
+                    </a>
+                </li>
+                <li style="display: inline;">
+                    <a href="https://twitter.com/Nick_Bap" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ url_for('static', filename='icons/iconmonstr-twitter-1.svg') }}" alt="twitter">
+                    </a>
+                </li>
+                <li style="display: inline;">
+                    <a href="https://www.instagram.com/nick_bap/" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ url_for('static', filename='icons/iconmonstr-instagram-11.svg') }}"
+                            alt="instagram">
+                    </a>
+                </li>
+                <li style="display: inline;">
+                    <a href="https://www.pinterest.com/nbautista12/" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ url_for('static', filename='icons/iconmonstr-pinterest-1.svg') }}" alt="pinterest">
+                    </a>
+                </li>
+                <li style="display: inline;">
+                    <a href="https://github.com/nickbap" target="_blank" rel="noopener noreferrer">
+                        <img src="{{ url_for('static', filename='icons/iconmonstr-github-1.svg') }}" alt="github">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <main class="container">
-    <h1>Hello World!</h1>
+    <div class="row">
+        <div class="col-md-8">
+            {% for post in posts %}
+            <div class="border p-4 mb-2 shadow-sm">
+                <h3 class="mb-0">{{ post.title }}</h3>
+                <p class="mb-1 text-muted">{{ post.published_at.strftime('%B %-d, %Y') }}</p>
+                <p class="card-text mb-auto">{{ post.description }}</p>
+                <a href="#">Continue reading</a>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            <h4>Recent Posts</h4>
+            <ul>
+                {% for post in posts %}
+                <li><a href="#">{{ post.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </main>
 {% endblock %}

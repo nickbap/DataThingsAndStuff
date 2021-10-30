@@ -20,7 +20,8 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
-    return render_template("home.html")
+    posts = temp_posts
+    return render_template("home.html", posts=posts)
 
 
 @main.route("/about")

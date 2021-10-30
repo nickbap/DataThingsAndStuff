@@ -17,7 +17,9 @@
 <body>
     <nav class="navbar navbar-expand-md navbar-dark static-top bg-dark">
         <div class="container-fluid">
+            {% if not request.endpoint == 'main.index' %}
             <a class="navbar-brand" href="{{ url_for('main.index') }}">Data Things & Stuff</a>
+            {% endif %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -51,6 +53,25 @@
     </script>
 
     {% block extra_js %}{% endblock %}
+
+
+    <div class="container">
+        <footer class="py-3 my-4">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="https://www.linkedin.com/in/nickolusmatthewbautista/"
+                        class="nav-link px-2 text-muted">LinkedIn</a></li>
+                <li class="nav-item"><a href="https://twitter.com/Nick_Bap" class="nav-link px-2 text-muted">Twitter</a>
+                </li>
+                <li class="nav-item"><a href="https://www.instagram.com/nick_bap/"
+                        class="nav-link px-2 text-muted">Instagram</a></li>
+                <li class="nav-item"><a href="https://www.pinterest.com/nbautista12/"
+                        class="nav-link px-2 text-muted">Pinterest</a></li>
+                <li class="nav-item"><a href="https://github.com/nickbap" class="nav-link px-2 text-muted">GitHub</a>
+                </li>
+            </ul>
+            <p class="text-center text-muted">&copy; Data Things & Stuff</p>
+        </footer>
+    </div>
 
 </body>
 
