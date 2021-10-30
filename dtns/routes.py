@@ -76,7 +76,7 @@ def create():
 
         flash("Your Post has been created!", "success")
         return redirect(url_for("main.admin"))
-    return render_template("create.html", form=form, today=today)
+    return render_template("editor.html", form=form, today=today)
 
 
 @main.route("/logout")
