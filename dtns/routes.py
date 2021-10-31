@@ -15,6 +15,7 @@ from sqlalchemy import desc
 from werkzeug.security import check_password_hash
 
 from dtns import db
+from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
 from dtns.forms import LoginForm
 from dtns.models import Post
@@ -111,6 +112,27 @@ def edit(post_id):
     form.description.data = post.description
     form.source.data = post.source
     return render_template("editor.html", form=form, post=post, today=date.today())
+
+
+@main.route("/publish/<int:post_id>", methods=["POST"])
+@login_required
+def publish(post_id):
+    post = Post.query.get(post_id)
+
+    if post.state == PostStatus.PUBLISHED:
+        flash("This post has already been published!", "danger")
+        return redirect(url_for("main.admin"))
+
+    now = datetime.utcnow()
+    post.state = PostStatus.PUBLISHED
+    post.updated_at = now
+    post.published_at = now
+
+    db.session.add(post)
+    db.session.commit()
+
+    flash("Your post has been published!", "success")
+    return redirect(url_for("main.admin"))
 
 
 @main.route("/preview/<slug>")

@@ -239,6 +239,47 @@ class TestPostModel(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.title, response_text)
 
+    def test_publish_post(self):
+        user_data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=user_data, follow_redirects=True)
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        self.client.post("/create", data=post_data, follow_redirects=True)
+
+        response = self.client.post("/publish/1", follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Your post has been published!", response_text)
+        self.assertIn("success", response_text)
+
+        post = Post.query.first()
+
+        self.assertEqual(PostStatus.PUBLISHED, post.state)
+
+    def test_publish_post_already_published(self):
+        user_data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=user_data, follow_redirects=True)
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        self.client.post("/create", data=post_data, follow_redirects=True)
+        self.client.post("/publish/1", follow_redirects=True)
+
+        response = self.client.post("/publish/1", follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("This post has already been published!", response_text)
+        self.assertIn("danger", response_text)
+
 
 class TestUserModel(unittest.TestCase):
     def setUp(self):
