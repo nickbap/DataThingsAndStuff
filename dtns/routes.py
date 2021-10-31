@@ -48,7 +48,7 @@ def about():
 @main.route("/admin", methods=["GET", "POST"])
 def admin():
     if current_user.is_authenticated:
-        posts = Post.query.all()
+        posts = Post.query.order_by(desc("updated_at")).all()
     else:
         posts = None
 
