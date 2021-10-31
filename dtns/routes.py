@@ -160,6 +160,26 @@ def archive(post_id):
     return redirect(url_for("main.admin"))
 
 
+@main.route("/draft/<int:post_id>", methods=["POST"])
+@login_required
+def draft(post_id):
+    post = Post.query.get(post_id)
+
+    if post.state == PostStatus.DRAFT:
+        flash("This post is already a draft!", "danger")
+        return redirect(url_for("main.admin"))
+
+    post.state = PostStatus.DRAFT
+    post.updated_at = datetime.utcnow()
+    post.published_at = None
+
+    db.session.add(post)
+    db.session.commit()
+
+    flash("Your post has been marked as a draft!", "success")
+    return redirect(url_for("main.admin"))
+
+
 @main.route("/preview/<slug>")
 @login_required
 def preview(slug):

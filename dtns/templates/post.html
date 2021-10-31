@@ -46,6 +46,13 @@
             <button type="submit" class="btn btn-dark">Archive</button>
             {% endif %}
         </form>
+        <form action="{{ url_for('main.draft', post_id=post.id) }}" method="POST">
+            {% if post.state == 'draft' %}
+            <button type="submit" class="btn btn-warning" disabled>Draft</button>
+            {% else %}
+            <button type="submit" class="btn btn-warning">Draft</button>
+            {% endif %}
+        </form>
     </div>
     {% endif %}
 </main>

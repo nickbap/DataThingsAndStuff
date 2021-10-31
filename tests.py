@@ -321,6 +321,47 @@ class TestPostModel(unittest.TestCase):
         self.assertIn("This post has already been archived!", response_text)
         self.assertIn("danger", response_text)
 
+    def test_mark_post_as_draft(self):
+        user_data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=user_data, follow_redirects=True)
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        self.client.post("/create", data=post_data, follow_redirects=True)
+        self.client.post("/publish/1", follow_redirects=True)
+
+        response = self.client.post("/draft/1", follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Your post has been marked as a draft!", response_text)
+        self.assertIn("success", response_text)
+
+        post = Post.query.first()
+
+        self.assertEqual(PostStatus.DRAFT, post.state)
+
+    def test_mark_post_as_draft_already_a_draft(self):
+        user_data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=user_data, follow_redirects=True)
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        self.client.post("/create", data=post_data, follow_redirects=True)
+
+        response = self.client.post("/draft/1", follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("This post is already a draft!", response_text)
+        self.assertIn("danger", response_text)
+
 
 class TestUserModel(unittest.TestCase):
     def setUp(self):
