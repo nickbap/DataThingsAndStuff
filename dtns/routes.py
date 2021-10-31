@@ -11,6 +11,7 @@ from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login.utils import login_required
+from sqlalchemy import desc
 from werkzeug.security import check_password_hash
 
 from dtns import db
@@ -112,7 +113,9 @@ def edit(post_id):
 @main.route("/preview/<slug>")
 @login_required
 def preview(slug):
-    posts = Post.query.all()
+    posts = (
+        Post.query.order_by(desc("created_at")).limit(5).all()
+    )  # should use published_at for prod
     post = Post.query.filter_by(slug=slug).first()
     return render_template("post.html", posts=posts, post=post)
 
