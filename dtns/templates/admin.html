@@ -1,7 +1,7 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<main class="container">
+<main class="container py-3">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
@@ -65,17 +65,18 @@
                             </a>
                             <div>
                                 {% if post.state == 'published' %}
-                                    <span class="badge bg-success">
-                                {% elif post.state == 'draft' %}
+                                <span class="badge bg-success">
+                                    {% elif post.state == 'draft' %}
                                     <span class="badge bg-warning text-dark">
-                                {% elif post.state == 'archived' %}
-                                    <span class="badge bg-dark">
-                                {% else %}
-                                    <span class="badge bg-primary">
-                                {% endif %}
-                                    {{ post.state.title() }}</span>
+                                        {% elif post.state == 'archived' %}
+                                        <span class="badge bg-dark">
+                                            {% else %}
+                                            <span class="badge bg-primary">
+                                                {% endif %}
+                                                {{ post.state.title() }}</span>
 
-                                    <a href="{{ url_for('main.edit', post_id=post.id) }}" class="badge bg-danger text-decoration-none">Edit</a>
+                                            <a href="{{ url_for('main.edit', post_id=post.id) }}"
+                                                class="badge bg-danger text-decoration-none">Edit</a>
                             </div>
                         </li>
                         {% endfor %}
