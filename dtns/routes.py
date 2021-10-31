@@ -135,6 +135,26 @@ def publish(post_id):
     return redirect(url_for("main.admin"))
 
 
+@main.route("/archive/<int:post_id>", methods=["POST"])
+@login_required
+def archive(post_id):
+    post = Post.query.get(post_id)
+
+    if post.state == PostStatus.ARCHIVED:
+        flash("This post has already been archived!", "danger")
+        return redirect(url_for("main.admin"))
+
+    post.state = PostStatus.ARCHIVED
+    post.updated_at = datetime.utcnow()
+    post.published_at = None
+
+    db.session.add(post)
+    db.session.commit()
+
+    flash("Your post has been archived!", "success")
+    return redirect(url_for("main.admin"))
+
+
 @main.route("/preview/<slug>")
 @login_required
 def preview(slug):

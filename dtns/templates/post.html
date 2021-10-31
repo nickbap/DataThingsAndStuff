@@ -39,6 +39,13 @@
             <button type="submit" class="btn btn-success">Publish</button>
             {% endif %}
         </form>
+        <form action="{{ url_for('main.archive', post_id=post.id) }}" method="POST">
+            {% if post.state == 'archived' %}
+            <button type="submit" class="btn btn-dark" disabled>Archive</button>
+            {% else %}
+            <button type="submit" class="btn btn-dark">Archive</button>
+            {% endif %}
+        </form>
     </div>
     {% endif %}
 </main>
