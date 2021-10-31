@@ -11,7 +11,11 @@
 
 {% block content %}
 <main class="container py-3">
+    {% if 'edit' in request.endpoint %}
+    <h1>Edit Post</h1>
+    {% else %}
     <h1>New Post</h1>
+    {% endif %}
     <div class="row">
         <div class="col-sm-6 py-3">
             <h2>Post Editor</h2>
@@ -20,7 +24,7 @@
                 <form method="POST" action="{{ url_for('main.edit', post_id=post.id) }}">
                 {% else %}
                 <form method="POST" action="{{ url_for('main.create') }}">
-                    {% endif %}
+                {% endif %}
                     {{ form.hidden_tag() }}
                     {{ form.csrf_token }}
                     <div class="form-group">
