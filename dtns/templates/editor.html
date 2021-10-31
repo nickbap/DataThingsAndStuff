@@ -16,7 +16,11 @@
         <div class="col-sm-6 py-3">
             <h2>Post Editor</h2>
             <div>
+                {% if 'edit' in request.endpoint %}
+                <form method="POST" action="{{ url_for('main.edit', post_id=post.id) }}">
+                {% else %}
                 <form method="POST" action="{{ url_for('main.create') }}">
+                    {% endif %}
                     {{ form.hidden_tag() }}
                     {{ form.csrf_token }}
                     <div class="form-group">

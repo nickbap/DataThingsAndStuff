@@ -74,6 +74,16 @@ class TestPostModel(unittest.TestCase):
         self.source = "# Hey"
         self.html = "<h1>Hey</h1>"
 
+        self.username = "test_user"
+        self.email = "test@test.com"
+        self.password = "test_password"
+        self.password_hash = generate_password_hash(self.password)
+        self.u = User(
+            email=self.email, username=self.username, password=self.password_hash
+        )
+        db.session.add(self.u)
+        db.session.commit()
+
     def tearDown(self):
         db.drop_all()
         self.app_context.pop()
@@ -145,14 +155,7 @@ class TestPostModel(unittest.TestCase):
         self.assertTrue(isinstance(post.updated_at, datetime))
 
     def test_create_post_from_editor(self):
-        email = "test@test.com"
-        username = "test_user"
-        password = "test_password"
-        password_hash = generate_password_hash(password)
-        u = User(email=email, username=username, password=password_hash)
-        db.session.add(u)
-        db.session.commit()
-        user_data = {"email": email, "password": password}
+        user_data = {"email": self.email, "password": self.password}
         response = self.client.post("/admin", data=user_data, follow_redirects=True)
 
         post_data = {
@@ -172,6 +175,51 @@ class TestPostModel(unittest.TestCase):
         self.assertIsNotNone(post)
         self.assertEqual(len(post), 1)
         self.assertEqual(self.title, post[0].title)
+
+    def test_edit_post_page(self):
+        user_data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=user_data, follow_redirects=True)
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        self.client.post("/create", data=post_data, follow_redirects=True)
+
+        response = self.client.get("/edit/1")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_post_from_editor(self):
+        user_data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=user_data, follow_redirects=True)
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        self.client.post("/create", data=post_data, follow_redirects=True)
+
+        updated_post_data = {
+            "title": "updated title",
+            "slug": "updated-slug",
+            "description": "updated description",
+            "source": "updated source",
+        }
+        response = self.client.post(
+            "/edit/1", data=updated_post_data, follow_redirects=True
+        )
+        response_text = response.get_data(as_text=True)
+        post = Post.query.first()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("updated", response_text)
+        self.assertEqual(updated_post_data["title"], post.title)
+        self.assertEqual(updated_post_data["slug"], post.slug)
+        self.assertEqual(updated_post_data["description"], post.description)
+        self.assertEqual(updated_post_data["source"], post.source)
 
 
 class TestUserModel(unittest.TestCase):

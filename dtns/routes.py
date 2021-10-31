@@ -1,4 +1,5 @@
 from datetime import date
+from datetime import datetime
 
 from flask import Blueprint
 from flask import flash
@@ -77,6 +78,35 @@ def create():
         flash("Your Post has been created!", "success")
         return redirect(url_for("main.admin"))
     return render_template("editor.html", form=form, today=today)
+
+
+@main.route("/edit/<int:post_id>", methods=["GET", "POST"])
+@login_required
+def edit(post_id):
+    form = BlogPostForm()
+    if form.validate_on_submit():
+        post = Post.query.get(post_id)
+
+        post.title = form.title.data
+        post.slug = form.slug.data
+        post.description = form.description.data
+        post.source = form.source.data
+        post.html = md.render(form.source.data)
+        post.updated_at = datetime.utcnow()
+
+        db.session.add(post)
+        db.session.commit()
+
+        flash("Your post has been updated!", "success")
+        return redirect(url_for("main.admin"))
+
+    post = Post.query.get(post_id)
+
+    form.title.data = post.title
+    form.slug.data = post.slug
+    form.description.data = post.description
+    form.source.data = post.source
+    return render_template("editor.html", form=form, post=post, today=date.today())
 
 
 @main.route("/logout")
