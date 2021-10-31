@@ -75,7 +75,7 @@
                                 {% endif %}
                                     {{ post.state.title() }}</span>
 
-                                    <a href="#" class="badge bg-danger text-decoration-none">Edit</a>
+                                    <a href="{{ url_for('main.edit', post_id=post.id) }}" class="badge bg-danger text-decoration-none">Edit</a>
                             </div>
                         </li>
                         {% endfor %}
