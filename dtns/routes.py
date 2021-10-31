@@ -27,7 +27,12 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
-    posts = Post.query.order_by(desc("updated_at")).all()
+    posts = (
+        Post.query.filter_by(state=PostStatus.PUBLISHED)
+        .order_by(desc("published_at"))
+        .all()
+    )
+
     if len(posts) >= 5:
         post_list = posts[:5]
     else:
@@ -159,8 +164,11 @@ def archive(post_id):
 @login_required
 def preview(slug):
     posts = (
-        Post.query.order_by(desc("created_at")).limit(5).all()
-    )  # should use published_at for prod
+        Post.query.filter_by(state=PostStatus.PUBLISHED)
+        .order_by(desc("published_at"))
+        .limit(5)
+        .all()
+    )
     post = Post.query.filter_by(slug=slug).first()
     return render_template("post.html", posts=posts, post=post)
 
@@ -168,8 +176,11 @@ def preview(slug):
 @main.route("/post/<slug>")
 def post(slug):
     posts = (
-        Post.query.order_by(desc("created_at")).limit(5).all()
-    )  # should use published_at for prod
+        Post.query.filter_by(state=PostStatus.PUBLISHED)
+        .order_by(desc("published_at"))
+        .limit(5)
+        .all()
+    )
     post = Post.query.filter_by(slug=slug).first()
     return render_template("post.html", posts=posts, post=post)
 
