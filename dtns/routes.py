@@ -15,7 +15,6 @@ from sqlalchemy import desc
 from werkzeug.security import check_password_hash
 
 from dtns import db
-from dtns.data import temp_posts
 from dtns.forms import BlogPostForm
 from dtns.forms import LoginForm
 from dtns.models import Post
@@ -27,8 +26,12 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
-    posts = temp_posts
-    return render_template("home.html", posts=posts)
+    posts = Post.query.order_by(desc("updated_at")).all()
+    if len(posts) >= 5:
+        post_list = posts[:5]
+    else:
+        post_list = posts
+    return render_template("home.html", posts=posts, post_list=post_list)
 
 
 @main.route("/about")
