@@ -60,7 +60,7 @@
                     <ul class="list-group list-group-flush">
                         {% for post in posts %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <a href="#" target="_new">
+                            <a href="{{ url_for('main.preview', slug=post.slug) }}">
                                 {{ post.title }}
                             </a>
                             <div>
