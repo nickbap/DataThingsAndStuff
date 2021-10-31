@@ -27,9 +27,11 @@
             </ul>
         </div>
     </div>
+    {% if 'preview' in request.endpoint %}
     <button type="button" class="btn btn-warning">
         <a href="{{ url_for('main.edit', post_id=post.id) }}" class="text-decoration-none">Edit</a>
     </button>
+    {% endif %}
 </main>
 {% endblock %}
 

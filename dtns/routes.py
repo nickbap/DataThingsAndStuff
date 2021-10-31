@@ -123,6 +123,15 @@ def preview(slug):
     return render_template("post.html", posts=posts, post=post)
 
 
+@main.route("/post/<slug>")
+def post(slug):
+    posts = (
+        Post.query.order_by(desc("created_at")).limit(5).all()
+    )  # should use published_at for prod
+    post = Post.query.filter_by(slug=slug).first()
+    return render_template("post.html", posts=posts, post=post)
+
+
 @main.route("/logout")
 def logout():
     logout_user()

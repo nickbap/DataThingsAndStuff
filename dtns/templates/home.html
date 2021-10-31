@@ -48,7 +48,7 @@
                 <!-- This should really be "published_at" but I'm not there, yet. -->
                 <p class="mb-1 text-muted">{{ post.updated_at.strftime('%B %-d, %Y') }}</p>
                 <p class="card-text mb-auto">{{ post.description }}</p>
-                <a href="#">Continue reading</a>
+                <a href="{{ url_for('main.post', slug=post.slug) }}">Continue reading</a>
             </div>
             {% endfor %}
         </div>
