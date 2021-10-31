@@ -11,8 +11,11 @@
         <div class="col-md-8">
             {% if post %}
             <h1>{{ post.title }}</h1>
-            <!-- This should really be "published_at" but I'm not there, yet. -->
-            <p class="mb-1 text-muted">{{ post.updated_at.strftime('%B %-d, %Y') }}</p>
+            {% if post.state == 'published' %}
+            <p class="mb-1 text-muted">{{ post.published_at.strftime('%B %-d, %Y') }}</p>
+            {% else %}
+            <p class="mb-1 text-muted">{{ post.created_at.strftime('%B %-d, %Y') }}</p>
+            {% endif %}
             <div id="post-content" class="border-top py-4">
                 {{ post.html | safe }}
             </div>
