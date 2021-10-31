@@ -1,0 +1,44 @@
+{% extends '_base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="row py-5">
+        <div class="col-md-8">
+            {% if post %}
+            <h1>{{ post.title }}</h1>
+            <!-- This should really be "published_at" but I'm not there, yet. -->
+            <p class="mb-1 text-muted">{{ post.updated_at.strftime('%B %-d, %Y') }}</p>
+            <div class="border-top py-4">
+                {{ post.html | safe }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <h4>Recent Posts</h4>
+            <ul>
+                {% for post in posts %}
+                <li><a href="#">{{ post.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <button type="button" class="btn btn-warning">
+        <a href="{{ url_for('main.edit', post_id=post.id) }}" class="text-decoration-none">Edit</a>
+    </button>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('pre code').forEach((el) => {
+            hljs.highlightElement(el);
+        });
+    });
+</script>
+{% endblock %}

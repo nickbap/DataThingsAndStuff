@@ -221,6 +221,23 @@ class TestPostModel(unittest.TestCase):
         self.assertEqual(updated_post_data["description"], post.description)
         self.assertEqual(updated_post_data["source"], post.source)
 
+    def test_preview_page(self):
+        user_data = {"email": self.email, "password": self.password}
+        self.client.post("/admin", data=user_data, follow_redirects=True)
+        post_data = {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "source": self.source,
+        }
+        self.client.post("/create", data=post_data, follow_redirects=True)
+
+        response = self.client.get(f"/preview/{self.slug}")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.title, response_text)
+
 
 class TestUserModel(unittest.TestCase):
     def setUp(self):

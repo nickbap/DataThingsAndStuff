@@ -109,6 +109,14 @@ def edit(post_id):
     return render_template("editor.html", form=form, post=post, today=date.today())
 
 
+@main.route("/preview/<slug>")
+@login_required
+def preview(slug):
+    posts = Post.query.all()
+    post = Post.query.filter_by(slug=slug).first()
+    return render_template("post.html", posts=posts, post=post)
+
+
 @main.route("/logout")
 def logout():
     logout_user()
