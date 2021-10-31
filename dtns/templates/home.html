@@ -56,7 +56,7 @@
             <h4>Recent Posts</h4>
             <ul>
                 {% for post in post_list %}
-                <li><a href="#">{{ post.title }}</a></li>
+                <li><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></li>
                 {% endfor %}
             </ul>
         </div>
