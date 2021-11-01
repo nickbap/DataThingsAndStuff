@@ -146,3 +146,5 @@ cython_debug/
 dtns.db
 
 scratch_pad.py
+
+settings.json

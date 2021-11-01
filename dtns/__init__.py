@@ -29,6 +29,6 @@ def create_app(testing_config=None):
 
     app.register_blueprint(main)
 
-    from dtns import models
+    from dtns import models  # noqa: F401
 
     return app

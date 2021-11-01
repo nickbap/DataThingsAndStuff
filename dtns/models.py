@@ -1,5 +1,4 @@
 from datetime import datetime
-from operator import index
 
 from flask_login import UserMixin
 
