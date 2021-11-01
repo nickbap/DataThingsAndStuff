@@ -152,8 +152,8 @@ class TestPostModel(unittest.TestCase):
 
         post = Post.query.first()
 
-        self.assertTrue(isinstance(post.created_at, datetime))
-        self.assertTrue(isinstance(post.updated_at, datetime))
+        self.assertIsInstance(post.created_at, datetime)
+        self.assertIsInstance(post.updated_at, datetime)
 
     def test_create_post_from_editor(self):
         user_data = {"email": self.email, "password": self.password}
@@ -408,7 +408,7 @@ class TestUserModel(unittest.TestCase):
         u = User.query.first()
 
         self.assertIsNotNone(u.created_at)
-        self.assertTrue(isinstance(u.created_at, datetime))
+        self.assertIsInstance(u.created_at, datetime)
 
 
 class TestAppAuth(unittest.TestCase):
