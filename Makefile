@@ -4,6 +4,9 @@ dev:
 tests:
 	python tests.py
 
+test:
+	python -m unittest -v $(path)
+
 coverage:
 	coverage report -m
 
