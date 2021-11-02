@@ -5,6 +5,7 @@ from flask_login import UserMixin
 from dtns import db
 from dtns import login_manager
 from dtns.constants import PostStatus
+from dtns.utils import md
 
 
 class Post(db.Model):
@@ -19,6 +20,13 @@ class Post(db.Model):
     state = db.Column(db.String(30), default=PostStatus.DRAFT)
     source = db.Column(db.Text)
     html = db.Column(db.Text)
+
+    def generate_html(self, source):
+        self.html = md.render(source)
+
+    @staticmethod
+    def on_change_source(target, value, oldvalue, initiator):
+        return target.generate_html(value)
 
     def __repr__(self):
         return f"<Post {self.id} {self.slug}>"
@@ -40,3 +48,6 @@ class User(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+db.event.listen(Post.source, "set", Post.on_change_source)
