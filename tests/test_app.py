@@ -5,7 +5,7 @@ from flask import current_app
 from dtns import create_app
 
 
-class TestApp(unittest.TestCase):
+class TestingAppTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app("testing")
         self.app_context = self.app.app_context()
@@ -15,12 +15,14 @@ class TestApp(unittest.TestCase):
     def tearDown(self):
         self.app_context.pop()
 
-    def test_app_testing_config(self):
-        self.assertFalse(current_app.config["DEBUG"])
+    def test_app_is_testing(self):
         self.assertTrue(current_app.config["TESTING"])
 
+    def test_app_is_not_debugging(self):
+        self.assertFalse(current_app.config["DEBUG"])
 
-class TestAppConfig(unittest.TestCase):
+
+class AppConfigTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
         self.app_context = self.app.app_context()
@@ -30,7 +32,11 @@ class TestAppConfig(unittest.TestCase):
     def tearDown(self):
         self.app_context.pop()
 
-    def test_app_config(self):
-        self.assertFalse(current_app.config["DEBUG"])
-        self.assertFalse(current_app.config["TESTING"])
+    def test_app_production_env(self):
         self.assertEqual(current_app.config["ENV"], "production")
+
+    def test_app_is_not_testing(self):
+        self.assertFalse(current_app.config["TESTING"])
+
+    def test_app_is_not_debugging(self):
+        self.assertFalse(current_app.config["DEBUG"])
