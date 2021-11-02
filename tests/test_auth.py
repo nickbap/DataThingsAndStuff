@@ -7,7 +7,7 @@ from dtns import db
 from dtns.models import User
 
 
-class TestAppAuth(unittest.TestCase):
+class AuthTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app("testing")
         self.app_context = self.app.app_context()
