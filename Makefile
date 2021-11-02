@@ -11,13 +11,13 @@ coverage:
 	coverage report -m
 
 all-tests:
-	coverage run -m unittest -v tests.py && coverage report -m && coverage html
+	coverage run -m unittest -v && coverage report -m && coverage html
 
 dev-sql:
 	sqlite3 dtns.db
 
 lint:
 	flake8 dtns
-	flake8 tests.py
+	flake8 tests
 
 pr: lint all-tests
