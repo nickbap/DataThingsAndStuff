@@ -5,7 +5,6 @@ from dtns import create_app
 from dtns import db
 from dtns.constants import PostStatus
 from dtns.models import Post
-from dtns.utils import md
 
 
 class BaseRouteTestCase(unittest.TestCase):
@@ -25,7 +24,6 @@ class BaseRouteTestCase(unittest.TestCase):
                 slug=f"slug-{i}",
                 description=f"Post description {i}",
                 source=source,
-                html=md.render(source),
             )
             self.posts.append(post)
 

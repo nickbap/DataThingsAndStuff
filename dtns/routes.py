@@ -20,7 +20,6 @@ from dtns.forms import BlogPostForm
 from dtns.forms import LoginForm
 from dtns.models import Post
 from dtns.models import User
-from dtns.utils import md
 
 main = Blueprint("main", __name__)
 
@@ -80,7 +79,6 @@ def create():
             slug=form.slug.data,
             description=form.description.data,
             source=form.source.data,
-            html=md.render(form.source.data),
         )
         db.session.add(post)
         db.session.commit()
@@ -101,7 +99,6 @@ def edit(post_id):
         post.slug = form.slug.data
         post.description = form.description.data
         post.source = form.source.data
-        post.html = md.render(form.source.data)
         post.updated_at = datetime.utcnow()
 
         db.session.add(post)
