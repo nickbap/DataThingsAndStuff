@@ -10,7 +10,7 @@ from dtns.models import Post
 from dtns.models import User
 
 
-class TestPostModel(unittest.TestCase):
+class PostModelTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app("testing")
         self.app_context = self.app.app_context()
@@ -105,7 +105,7 @@ class TestPostModel(unittest.TestCase):
         self.assertIsInstance(post.updated_at, datetime)
 
 
-class TestUserModel(unittest.TestCase):
+class UserModelTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app("testing")
         self.app_context = self.app.app_context()
