@@ -50,11 +50,11 @@ class BaseRouteTestCase(unittest.TestCase):
         self.app_context.pop()
 
 
-class NonAdminRouteTestCase(BaseRouteTestCase):
+class RoutesAsUserTestCase(BaseRouteTestCase):
     def setUp(self):
-        super(NonAdminRouteTestCase, self).setUp()
+        super(RoutesAsUserTestCase, self).setUp()
 
-    def test_home_route(self):
+    def test_home_route_as_user(self):
         response = self.client.get("/")
         response_text = response.get_data(as_text=True)
 
@@ -65,13 +65,13 @@ class NonAdminRouteTestCase(BaseRouteTestCase):
             self.assertIn(post.slug, response_text)
             self.assertIn(post.description, response_text)
 
-    def test_about_route(self):
+    def test_about_route_as_user(self):
         response = self.client.get("/about")
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("About", response.get_data(as_text=True))
 
-    def test_admin_route(self):
+    def test_admin_route_as_user(self):
         response = self.client.get("/admin")
         response_text = response.get_data(as_text=True)
 
@@ -80,37 +80,37 @@ class NonAdminRouteTestCase(BaseRouteTestCase):
         self.assertNotIn('id="admin-nav"', response_text)
         self.assertIn("Login", response_text)
 
-    def test_create_route(self):
+    def test_create_route_as_user(self):
         response = self.client.get("/create")
 
         self.assertEqual(response.status_code, 401)
 
-    def test_edit_route(self):
+    def test_edit_route_as_user(self):
         response = self.client.get("/edit/1")
 
         self.assertEqual(response.status_code, 401)
 
-    def test_publish_route(self):
+    def test_publish_route_as_user(self):
         response = self.client.post("/publish/1")
 
         self.assertEqual(response.status_code, 401)
 
-    def test_archive_route(self):
+    def test_archive_route_as_user(self):
         response = self.client.post("/archive/1")
 
         self.assertEqual(response.status_code, 401)
 
-    def test_draft_route(self):
+    def test_draft_route_as_user(self):
         response = self.client.post("/draft/1")
 
         self.assertEqual(response.status_code, 401)
 
-    def test_preview_route(self):
+    def test_preview_route_as_user(self):
         response = self.client.get("/preview/slug-1")
 
         self.assertEqual(response.status_code, 401)
 
-    def test_post_route(self):
+    def test_post_route_as_user(self):
         response = self.client.get("/post/slug-1")
         response_text = response.get_data(as_text=True)
 
@@ -119,9 +119,9 @@ class NonAdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("slug-1", response_text)
 
 
-class AdminRouteTestCase(BaseRouteTestCase):
+class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):
-        super(AdminRouteTestCase, self).setUp()
+        super(RoutesAsAdminTestCase, self).setUp()
         self.app.config["LOGIN_DISABLED"] = True
 
         # Archive a post
@@ -133,12 +133,12 @@ class AdminRouteTestCase(BaseRouteTestCase):
         db.session.add(post)
         db.session.commit()
 
-    def test_create_route(self):
+    def test_create_route_as_admin(self):
         response = self.client.get("/create")
 
         self.assertEqual(response.status_code, 200)
 
-    def test_create_post_from_post_route(self):
+    def test_create_post_from_post_route_as_admin(self):
         post_data = {
             "title": "Post Route Title",
             "slug": "post-route-title",
@@ -152,7 +152,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("Your Post has been created!", response_text)
         self.assertIn("success", response_text)
 
-    def test_edit_post_route(self):
+    def test_edit_post_route_as_admin(self):
         response = self.client.get("/edit/1")
         response_text = response.get_data(as_text=True)
 
@@ -163,7 +163,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn('id="blog-home-page-preview"', response_text)
         self.assertIn('id="blog-post-preview"', response_text)
 
-    def test_edit_post_from_edit_route(self):
+    def test_edit_post_from_edit_route_as_admin(self):
         updated_post_data = {
             "title": "updated title",
             "slug": "updated-slug",
@@ -178,7 +178,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("updated", response_text)
 
-    def test_preview_page(self):
+    def test_preview_page_as_admin(self):
         response = self.client.get("/preview/slug-1")
         response_text = response.get_data(as_text=True)
 
@@ -190,7 +190,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("Archive", response_text)
         self.assertIn("Draft", response_text)
 
-    def test_publish_route(self):
+    def test_publish_route_as_admin(self):
         response = self.client.post("/publish/4", follow_redirects=True)
         response_text = response.get_data(as_text=True)
 
@@ -198,7 +198,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("Your post has been published!", response_text)
         self.assertIn("success", response_text)
 
-    def test_publish_post_already_published(self):
+    def test_publish_post_already_published_as_admin(self):
         response = self.client.post("/publish/1", follow_redirects=True)
         response_text = response.get_data(as_text=True)
 
@@ -206,7 +206,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("This post has already been published!", response_text)
         self.assertIn("danger", response_text)
 
-    def test_archive_post(self):
+    def test_archive_post_as_admin(self):
         response = self.client.post("/archive/1", follow_redirects=True)
         response_text = response.get_data(as_text=True)
 
@@ -214,7 +214,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("Your post has been archived!", response_text)
         self.assertIn("success", response_text)
 
-    def test_archive_post_already_archived(self):
+    def test_archive_post_already_archived_as_admin(self):
         response = self.client.post("/archive/5", follow_redirects=True)
         response_text = response.get_data(as_text=True)
 
@@ -222,7 +222,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("This post has already been archived!", response_text)
         self.assertIn("danger", response_text)
 
-    def test_mark_post_as_draft(self):
+    def test_mark_post_as_draft_as_admin(self):
         response = self.client.post("/draft/1", follow_redirects=True)
         response_text = response.get_data(as_text=True)
 
@@ -230,7 +230,7 @@ class AdminRouteTestCase(BaseRouteTestCase):
         self.assertIn("Your post has been marked as a draft!", response_text)
         self.assertIn("success", response_text)
 
-    def test_mark_post_as_draft_already_a_draft(self):
+    def test_mark_post_as_draft_already_a_draft_as_admin(self):
         response = self.client.post("/draft/4", follow_redirects=True)
         response_text = response.get_data(as_text=True)
 
