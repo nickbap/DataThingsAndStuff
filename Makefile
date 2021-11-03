@@ -21,3 +21,6 @@ lint:
 	flake8 tests
 
 pr: lint all-tests
+
+shell:
+	FLASK_ENV=development flask shell

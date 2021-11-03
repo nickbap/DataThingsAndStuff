@@ -31,4 +31,14 @@ def create_app(testing_config=None):
 
     from dtns import models  # noqa: F401
 
+    if app.config["DEBUG"]:
+
+        @app.shell_context_processor
+        def make_shell_context():
+            return {
+                "db": db,
+                "Post": models.Post,
+                "User": models.User,
+            }
+
     return app
