@@ -16,7 +16,7 @@ from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
 from dtns.forms import LoginForm
 from dtns.model_storage import PostModelStorage
-from dtns.models import User
+from dtns.model_storage import UserModelStorage
 
 main = Blueprint("main", __name__)
 
@@ -42,7 +42,7 @@ def admin():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = UserModelStorage.get_user_by_email(form.email.data)
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             next_page = request.args.get("next")
