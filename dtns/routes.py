@@ -1,5 +1,4 @@
 from datetime import date
-from datetime import datetime
 
 from flask import Blueprint
 from flask import flash
@@ -11,14 +10,12 @@ from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login.utils import login_required
-from sqlalchemy import desc
 from werkzeug.security import check_password_hash
 
-from dtns import db
 from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
 from dtns.forms import LoginForm
-from dtns.models import Post
+from dtns.model_storage import PostModelStorage
 from dtns.models import User
 
 main = Blueprint("main", __name__)
@@ -26,16 +23,8 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
-    posts = (
-        Post.query.filter_by(state=PostStatus.PUBLISHED)
-        .order_by(desc("published_at"))
-        .all()
-    )
-
-    if len(posts) >= 5:
-        post_list = posts[:5]
-    else:
-        post_list = posts
+    posts = PostModelStorage.get_all_published_posts()
+    post_list = PostModelStorage.get_recent_posts()
     return render_template("home.html", posts=posts, post_list=post_list)
 
 
@@ -47,7 +36,7 @@ def about():
 @main.route("/admin", methods=["GET", "POST"])
 def admin():
     if current_user.is_authenticated:
-        posts = Post.query.order_by(desc("updated_at")).all()
+        posts = PostModelStorage.get_all_posts_ordered_by_updated_at()
     else:
         posts = None
 
@@ -74,14 +63,13 @@ def create():
     today = date.today()
     form = BlogPostForm()
     if form.validate_on_submit():
-        post = Post(
-            title=form.title.data,
-            slug=form.slug.data,
-            description=form.description.data,
-            source=form.source.data,
-        )
-        db.session.add(post)
-        db.session.commit()
+        data = {
+            "title": form.title.data,
+            "slug": form.slug.data,
+            "description": form.slug.data,
+            "source": form.source.data,
+        }
+        PostModelStorage.create_post(data)
 
         flash("Your Post has been created!", "success")
         return redirect(url_for("main.admin"))
@@ -92,22 +80,20 @@ def create():
 @login_required
 def edit(post_id):
     form = BlogPostForm()
+    post = PostModelStorage.get(post_id)
+
     if form.validate_on_submit():
-        post = Post.query.get(post_id)
+        data = {
+            "title": form.title.data,
+            "slug": form.slug.data,
+            "description": form.slug.data,
+            "source": form.source.data,
+        }
 
-        post.title = form.title.data
-        post.slug = form.slug.data
-        post.description = form.description.data
-        post.source = form.source.data
-        post.updated_at = datetime.utcnow()
-
-        db.session.add(post)
-        db.session.commit()
+        PostModelStorage.edit_post(post.id, data)
 
         flash("Your post has been updated!", "success")
         return redirect(url_for("main.admin"))
-
-    post = Post.query.get(post_id)
 
     form.title.data = post.title
     form.slug.data = post.slug
@@ -119,19 +105,13 @@ def edit(post_id):
 @main.route("/publish/<int:post_id>", methods=["POST"])
 @login_required
 def publish(post_id):
-    post = Post.query.get(post_id)
+    post = PostModelStorage.get(post_id)
 
     if post.state == PostStatus.PUBLISHED:
         flash("This post has already been published!", "danger")
         return redirect(url_for("main.admin"))
 
-    now = datetime.utcnow()
-    post.state = PostStatus.PUBLISHED
-    post.updated_at = now
-    post.published_at = now
-
-    db.session.add(post)
-    db.session.commit()
+    PostModelStorage.publish_post(post.id)
 
     flash("Your post has been published!", "success")
     return redirect(url_for("main.admin"))
@@ -140,18 +120,13 @@ def publish(post_id):
 @main.route("/archive/<int:post_id>", methods=["POST"])
 @login_required
 def archive(post_id):
-    post = Post.query.get(post_id)
+    post = PostModelStorage.get(post_id)
 
     if post.state == PostStatus.ARCHIVED:
         flash("This post has already been archived!", "danger")
         return redirect(url_for("main.admin"))
 
-    post.state = PostStatus.ARCHIVED
-    post.updated_at = datetime.utcnow()
-    post.published_at = None
-
-    db.session.add(post)
-    db.session.commit()
+    PostModelStorage.archive_post(post.id)
 
     flash("Your post has been archived!", "success")
     return redirect(url_for("main.admin"))
@@ -160,18 +135,13 @@ def archive(post_id):
 @main.route("/draft/<int:post_id>", methods=["POST"])
 @login_required
 def draft(post_id):
-    post = Post.query.get(post_id)
+    post = PostModelStorage.get(post_id)
 
     if post.state == PostStatus.DRAFT:
         flash("This post is already a draft!", "danger")
         return redirect(url_for("main.admin"))
 
-    post.state = PostStatus.DRAFT
-    post.updated_at = datetime.utcnow()
-    post.published_at = None
-
-    db.session.add(post)
-    db.session.commit()
+    PostModelStorage.mark_post_as_draft(post.id)
 
     flash("Your post has been marked as a draft!", "success")
     return redirect(url_for("main.admin"))
@@ -180,25 +150,17 @@ def draft(post_id):
 @main.route("/preview/<slug>")
 @login_required
 def preview(slug):
-    posts = (
-        Post.query.filter_by(state=PostStatus.PUBLISHED)
-        .order_by(desc("published_at"))
-        .limit(5)
-        .all()
-    )
-    post = Post.query.filter_by(slug=slug).first()
+    # TODO rename posts to post_list
+    posts = PostModelStorage.get_recent_posts()
+    post = PostModelStorage.get_post_by_slug(slug)
     return render_template("post.html", posts=posts, post=post)
 
 
 @main.route("/post/<slug>")
 def post(slug):
-    posts = (
-        Post.query.filter_by(state=PostStatus.PUBLISHED)
-        .order_by(desc("published_at"))
-        .limit(5)
-        .all()
-    )
-    post = Post.query.filter_by(slug=slug).first()
+    # TODO rename posts to post_list
+    posts = PostModelStorage.get_recent_posts()
+    post = PostModelStorage.get_post_by_slug(slug)
     return render_template("post.html", posts=posts, post=post)
 
 
