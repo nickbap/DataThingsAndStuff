@@ -65,6 +65,28 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertEqual(len(posts), 1)
         self.assertEqual(posts[0].description, "Post description 2")
 
+    def test_get_all_published_posts(self):
+        # "publish" posts
+        for i in range(8):
+            post = self.posts[i]
+
+            now = datetime.utcnow()
+            post.state = PostStatus.PUBLISHED
+            post.updated_at = now
+            post.published_at = now
+
+            db.session.add(post)
+            db.session.commit()
+
+        posts = PostModelStorage.get_all_published_posts()
+
+        self.assertEqual(len(posts), 8)
+        self.assertTrue(
+            posts,
+            sorted(self.posts[:8], key=lambda post: post.published_at, reverse=True),
+        )
+        self.assertTrue(all([post.state == PostStatus.PUBLISHED for post in posts]))
+
     def test_get_recent_posts(self):
         # "publish" posts
         for i in range(6):

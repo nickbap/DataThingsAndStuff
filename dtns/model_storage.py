@@ -29,6 +29,17 @@ class PostModelStorage(BaseModelStorage):
     model = Post
 
     @classmethod
+    def get_all_published_posts(cls):
+        """
+        Return all published posts ordered by published date.
+        """
+        return (
+            cls.model.query.filter_by(state=PostStatus.PUBLISHED)
+            .order_by(desc("published_at"))
+            .all()
+        )
+
+    @classmethod
     def get_recent_posts(cls):
         """
         Return 5 most recent published posts ordered by published date.
