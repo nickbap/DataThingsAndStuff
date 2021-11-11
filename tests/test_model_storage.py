@@ -5,9 +5,12 @@ from dtns import create_app
 from dtns import db
 from dtns.constants import PostStatus
 from dtns.model_storage import PostModelStorage
+from dtns.model_storage import UserModelStorage
 from dtns.models import Post
+from dtns.models import User
 
 NUM_POSTS = 10
+NUM_USERS = 3
 
 
 class PostModelStorageTestCase(unittest.TestCase):
@@ -188,3 +191,57 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertEqual(draft_post.state, PostStatus.DRAFT)
         self.assertIsNone(draft_post.published_at)
         self.assertNotEqual(draft_post.updated_at, post.created_at)
+
+
+class UserModelStorageTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app("testing")
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+        for i in range(NUM_USERS):
+            i += 1
+            self.email = f"test_{i}@test.com"
+            self.username = f"test_user_{i}"
+            self.password = f"test_password_{i}"
+
+            user = User(
+                email=self.email, username=self.username, password=self.password
+            )
+
+            db.session.add(user)
+            db.session.commit()
+
+    def tearDown(self):
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_get(self):
+        user = UserModelStorage.get(2)
+
+        self.assertIsNotNone(user)
+        self.assertEqual(user.id, 2)
+
+    def test_get_first(self):
+        user = UserModelStorage.get_first()
+
+        self.assertIsNotNone(user)
+        self.assertEqual(user.id, 1)
+
+    def test_get_all(self):
+        users = UserModelStorage.get_all()
+
+        self.assertEqual(len(users), NUM_USERS)
+
+    def test_filter_(self):
+        user = UserModelStorage.filter_(username="test_user_3")
+
+        self.assertEqual(len(user), 1)
+        self.assertEqual(user[0].username, "test_user_3")
+
+    def test_get_user_by_email(self):
+        user = UserModelStorage.get_user_by_email("test_1@test.com")
+
+        self.assertIsNotNone(user)
+        self.assertEqual(user.email, "test_1@test.com")

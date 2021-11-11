@@ -5,6 +5,7 @@ from sqlalchemy import desc
 from dtns import db
 from dtns.constants import PostStatus
 from dtns.models import Post
+from dtns.models import User
 
 
 class BaseModelStorage:
@@ -120,3 +121,11 @@ class PostModelStorage(BaseModelStorage):
 
         db.session.add(post)
         db.session.commit()
+
+
+class UserModelStorage(BaseModelStorage):
+    model = User
+
+    @classmethod
+    def get_user_by_email(cls, email):
+        return cls.filter_(email=email)[0]
