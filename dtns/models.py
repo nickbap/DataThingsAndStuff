@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from dtns import db
 from dtns import login_manager
 from dtns.constants import PostStatus
-from dtns.utils import md
+from dtns.utils.render_utils import md
 
 
 class Post(db.Model):
