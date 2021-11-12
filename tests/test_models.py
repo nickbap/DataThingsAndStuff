@@ -22,7 +22,7 @@ class PostModelTestCase(unittest.TestCase):
         self.slug = "a-test-tile"
         self.description = "A test post description"
         self.source = "# Hey"
-        self.html = "<h1>Hey</h1>"
+        self.html = "<h1>Hey</h1>\n"
 
         self.username = "test_user"
         self.email = "test@test.com"
@@ -44,7 +44,6 @@ class PostModelTestCase(unittest.TestCase):
             slug=self.slug,
             description=self.description,
             source=self.source,
-            html=self.html,
         )
         db.session.add(p)
         db.session.commit()
@@ -64,7 +63,6 @@ class PostModelTestCase(unittest.TestCase):
             slug=self.slug,
             description=self.description,
             source=self.source,
-            html=self.html,
         )
         db.session.add(p)
         db.session.commit()
@@ -79,7 +77,6 @@ class PostModelTestCase(unittest.TestCase):
             slug=self.slug,
             description=self.description,
             source=self.source,
-            html=self.html,
         )
         db.session.add(p)
         db.session.commit()
@@ -94,7 +91,6 @@ class PostModelTestCase(unittest.TestCase):
             slug=self.slug,
             description=self.description,
             source=self.source,
-            html=self.html,
         )
         db.session.add(p)
         db.session.commit()
