@@ -1,5 +1,9 @@
+import os
 import unittest
 from datetime import datetime
+
+from PIL import Image
+from PIL import ImageDraw
 
 from dtns import create_app
 from dtns import db
@@ -235,3 +239,35 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("This post is already a draft!", response_text)
         self.assertIn("danger", response_text)
+
+
+def create_test_image():
+    img = Image.new(mode="RGB", size=(200, 200))
+    ImageDraw.Draw(img).text((100, 100), "Testing... 1,2,3", (255, 255, 255))
+    return img
+
+
+class ServeUploadTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app("testing")
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
+        self.full_upload_path = os.path.join(
+            self.app.static_folder, self.app.config["UPLOAD_FOLDER"]
+        )
+        self.filename = "image-from-test.jpeg"
+
+        img = create_test_image()
+        img.save(os.path.join(self.full_upload_path, self.filename))
+
+    def tearDown(self):
+        self.app_context.pop()
+
+        os.remove(os.path.join(self.full_upload_path, self.filename))
+
+    def test_serve_upload(self):
+        response = self.client.get(f"/uploads/{self.filename}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "image/jpeg")

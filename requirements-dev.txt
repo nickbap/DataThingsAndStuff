@@ -5,3 +5,4 @@ flake8
 flake8-assertive
 isort
 pep8-naming
+Pillow

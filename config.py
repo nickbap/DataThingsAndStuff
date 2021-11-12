@@ -1,5 +1,4 @@
 import os
-from logging import DEBUG
 
 from dotenv import load_dotenv
 
@@ -13,6 +12,7 @@ class Config:
         "SQLALCHEMY_DATABASE_URI"
     ) or "sqlite:///" + os.path.join(basedir, "dtns.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    UPLOAD_FOLDER = "uploads"
 
 
 class TestingConfig(Config):

@@ -1,10 +1,13 @@
+import os
 from datetime import date
 
 from flask import Blueprint
+from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import send_from_directory
 from flask import url_for
 from flask_login import current_user
 from flask_login import login_user
@@ -162,6 +165,14 @@ def post(slug):
     posts = PostModelStorage.get_recent_posts()
     post = PostModelStorage.get_post_by_slug(slug)
     return render_template("post.html", posts=posts, post=post)
+
+
+@main.route("/uploads/<name>")
+def download_file(name):
+    upload_folder_path = os.path.join(
+        current_app.static_folder, current_app.config["UPLOAD_FOLDER"]
+    )
+    return send_from_directory(upload_folder_path, name)
 
 
 @main.route("/logout")
