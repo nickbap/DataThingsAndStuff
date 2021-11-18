@@ -281,6 +281,17 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertIn(self.filename, response_text)
         self.assertIn("success", response_text)
 
+    def test_upload_image_failure_as_admin(self):
+        data = {}
+        data["file"] = (io.BytesIO(b"abcdef"), "test-image.tiff")
+
+        response = self.client.post("/image-manager", data=data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("test-image.tiff", response_text)
+        self.assertIn("danger", response_text)
+
 
 def create_test_image():
     img = Image.new(mode="RGB", size=(200, 200))

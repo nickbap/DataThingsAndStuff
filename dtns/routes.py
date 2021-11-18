@@ -14,6 +14,7 @@ from flask_login import login_user
 from flask_login import logout_user
 from flask_login.utils import login_required
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 
 from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
@@ -21,6 +22,7 @@ from dtns.forms import ImageUploadForm
 from dtns.forms import LoginForm
 from dtns.model_storage import PostModelStorage
 from dtns.model_storage import UserModelStorage
+from dtns.utils import image_utils
 
 main = Blueprint("main", __name__)
 
@@ -180,19 +182,31 @@ def download_file(name):
 @login_required
 def image_manager():
     form = ImageUploadForm()
-    image_list = os.listdir(
-        os.path.join(current_app.static_folder, current_app.config["UPLOAD_FOLDER"])
-    )
+    image_list = [
+        image
+        for image in os.listdir(
+            os.path.join(current_app.static_folder, current_app.config["UPLOAD_FOLDER"])
+        )
+        if image_utils.is_valid_image_type(image)
+    ]
     if request.method == "POST":
         file_upload = request.files["file"]
+        filename = secure_filename(file_upload.filename)
+        if not image_utils.is_valid_image(filename):
+            flash(
+                "Something went wrong with your upload. Please check and try again.",
+                "danger",
+            )
+            return redirect(url_for("main.image_manager"))
+
         file_upload.save(
             os.path.join(
                 current_app.static_folder,
                 current_app.config["UPLOAD_FOLDER"],
-                file_upload.filename,
+                filename,
             ),
         )
-        flash(f'Sucessfully uploaded "{file_upload.filename}"', "success")
+        flash(f'Sucessfully uploaded "{filename}"', "success")
         return redirect(url_for("main.image_manager"))
     return render_template("image-manager.html", form=form, image_list=image_list)
 
