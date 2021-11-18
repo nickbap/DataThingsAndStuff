@@ -15,21 +15,31 @@
     {% endif %}
     {% endwith %}
     <h1>Image Manager</h1>
-    <div>
+    <div class="mb-3">
         <form method="POST" action="{{ url_for('main.image_manager') }}" enctype="multipart/form-data">
             {{ form.file.label(class="form-label") }}
             {{ form.file(class="form-control")}}
             {{ form.submit(class="btn btn-primary m-2") }}
         </form>
     </div>
-    <div>
+    <div class="container">
         {% if image_list %}
-        <h2>Available Images</h2>
-        <ul>
+        <h2 class="py-3">Available Images</h2>
+        <div class="container d-flex flex-wrap">
             {% for image in image_list %}
-            <li>{{ image }}</li>
+            <div class="p-2">
+                <div class="d-flex justify-content-center">
+                    <figure class="figure">
+                        <img class="img-thumbnail" style="max-width: 300px; height:auto"
+                            src="static/uploads/{{ image }}">
+                        <figcaption class="figure-caption">
+                            {{ url_for('main.download_file', name=image, _external=True) }}</figcaption>
+                    </figure>
+                </div>
+            </div>
             {% endfor %}
-        </ul>
+        </div>
+
         {% endif %}
     </div>
 </main>
