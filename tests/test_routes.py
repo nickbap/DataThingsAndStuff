@@ -250,7 +250,7 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Image Manager to be!", response_text)
+        self.assertIn("Image Manager", response_text)
 
 
 def create_test_image():

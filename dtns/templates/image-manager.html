@@ -1,0 +1,12 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<main class="container py-3">
+    <h1>Image Manager</h1>
+    <div>
+        {{ form.file.label(class="form-label") }}
+        {{ form.file(class="form-control")}}
+        {{ form.submit(class="btn btn-primary m-2") }}
+    </div>
+</main>
+{% endblock %}

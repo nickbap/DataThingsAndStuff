@@ -17,6 +17,7 @@ from werkzeug.security import check_password_hash
 
 from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
+from dtns.forms import ImageUploadForm
 from dtns.forms import LoginForm
 from dtns.model_storage import PostModelStorage
 from dtns.model_storage import UserModelStorage
@@ -178,7 +179,8 @@ def download_file(name):
 @main.route("/image-manager")
 @login_required
 def image_manager():
-    return "Image Manager to be!"
+    form = ImageUploadForm()
+    return render_template("image-manager.html", form=form)
 
 
 @main.route("/logout")

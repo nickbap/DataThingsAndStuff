@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -18,4 +19,9 @@ class BlogPostForm(FlaskForm):
     slug = StringField("Slug", validators=[DataRequired()])
     description = StringField("Post Description", validators=[DataRequired()])
     source = TextAreaField("Post", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
+
+class ImageUploadForm(FlaskForm):
+    file = FileField("Upload an Image")
     submit = SubmitField("Submit")
