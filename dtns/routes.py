@@ -176,11 +176,25 @@ def download_file(name):
     return send_from_directory(upload_folder_path, name)
 
 
-@main.route("/image-manager")
+@main.route("/image-manager", methods=["GET", "POST"])
 @login_required
 def image_manager():
     form = ImageUploadForm()
-    return render_template("image-manager.html", form=form)
+    image_list = os.listdir(
+        os.path.join(current_app.static_folder, current_app.config["UPLOAD_FOLDER"])
+    )
+    if request.method == "POST":
+        file_upload = request.files["file"]
+        file_upload.save(
+            os.path.join(
+                current_app.static_folder,
+                current_app.config["UPLOAD_FOLDER"],
+                file_upload.filename,
+            ),
+        )
+        flash(f'Sucessfully uploaded "{file_upload.filename}"', "success")
+        return redirect(url_for("main.image_manager"))
+    return render_template("image-manager.html", form=form, image_list=image_list)
 
 
 @main.route("/logout")

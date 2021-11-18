@@ -1,3 +1,4 @@
+import io
 import os
 import unittest
 from datetime import datetime
@@ -47,7 +48,16 @@ class BaseRouteTestCase(unittest.TestCase):
         db.session.add_all(self.published_posts)
         db.session.commit()
 
+        self.full_upload_path = os.path.join(
+            self.app.static_folder, self.app.config["UPLOAD_FOLDER"]
+        )
+        self.filename = "image-from-test.jpeg"
+
     def tearDown(self):
+        test_file_path = os.path.join(self.full_upload_path, self.filename)
+        if os.path.isfile(test_file_path):
+            os.remove(test_file_path)
+
         db.drop_all()
         self.app_context.pop()
 
@@ -122,6 +132,14 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
     def test_image_manager_route_as_user(self):
         response = self.client.get("/image-manager")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_upload_image_as_user(self):
+        data = {}
+        data["file"] = (io.BytesIO(b"abcdef"), self.filename)
+
+        response = self.client.post("/image-manager", data=data, follow_redirects=True)
 
         self.assertEqual(response.status_code, 401)
 
@@ -251,6 +269,17 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Image Manager", response_text)
+
+    def test_upload_image_as_admin(self):
+        data = {}
+        data["file"] = (io.BytesIO(b"abcdef"), self.filename)
+
+        response = self.client.post("/image-manager", data=data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.filename, response_text)
+        self.assertIn("success", response_text)
 
 
 def create_test_image():

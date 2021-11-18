@@ -148,4 +148,4 @@ dtns.db
 scratch_pad.py
 
 settings.json
-dtns/static/uploads/test.jpeg
+dtns/static/uploads/*
