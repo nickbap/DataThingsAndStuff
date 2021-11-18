@@ -175,6 +175,12 @@ def download_file(name):
     return send_from_directory(upload_folder_path, name)
 
 
+@main.route("/image-manager")
+@login_required
+def image_manager():
+    return "Image Manager to be!"
+
+
 @main.route("/logout")
 def logout():
     logout_user()

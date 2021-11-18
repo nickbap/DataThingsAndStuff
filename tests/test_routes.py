@@ -120,6 +120,11 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertIn("Title 1", response_text)
         self.assertIn("slug-1", response_text)
 
+    def test_image_manager_route_as_user(self):
+        response = self.client.get("/image-manager")
+
+        self.assertEqual(response.status_code, 401)
+
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):
@@ -239,6 +244,13 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("This post is already a draft!", response_text)
         self.assertIn("danger", response_text)
+
+    def test_image_manager_route_as_admin(self):
+        response = self.client.get("/image-manager")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Image Manager to be!", response_text)
 
 
 def create_test_image():
