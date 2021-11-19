@@ -156,18 +156,16 @@ def draft(post_id):
 @main.route("/preview/<slug>")
 @login_required
 def preview(slug):
-    # TODO rename posts to post_list
-    posts = PostModelStorage.get_recent_posts()
+    recent_post_list = PostModelStorage.get_recent_posts()
     post = PostModelStorage.get_post_by_slug(slug)
-    return render_template("post.html", posts=posts, post=post)
+    return render_template("post.html", recent_post_list=recent_post_list, post=post)
 
 
 @main.route("/post/<slug>")
 def post(slug):
-    # TODO rename posts to post_list
-    posts = PostModelStorage.get_recent_posts()
+    recent_post_list = PostModelStorage.get_recent_posts()
     post = PostModelStorage.get_post_by_slug(slug)
-    return render_template("post.html", posts=posts, post=post)
+    return render_template("post.html", recent_post_list=recent_post_list, post=post)
 
 
 @main.route("/uploads/<name>")
