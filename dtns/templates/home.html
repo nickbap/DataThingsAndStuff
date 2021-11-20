@@ -53,12 +53,7 @@
             {% endfor %}
         </div>
         <div class="col-md-4">
-            <h4>Recent Posts</h4>
-            <ul>
-                {% for post in post_list %}
-                <li><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></li>
-                {% endfor %}
-            </ul>
+            {% include 'components/recent-posts.html' %}
         </div>
     </div>
     {% endif %}

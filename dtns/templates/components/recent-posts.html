@@ -1,0 +1,6 @@
+<h4>Recent Posts</h4>
+<ul>
+    {% for post in recent_post_list %}
+    <li><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
