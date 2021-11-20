@@ -4,6 +4,16 @@ from urllib.parse import urlparse
 from markdown_it import MarkdownIt
 
 
+def render_blank_link(self, tokens, idx, options, env):
+    """
+    Add target="_blank" to links
+
+    Note: The post editor currently shows a broken image when this is used.
+    """
+    tokens[idx].attrSet("target", "_blank")
+    return self.renderToken(tokens, idx, options, env)
+
+
 def render_youtube(self, tokens, idx, options, env):
     """
     Render image syntax with youtube urls as embedded youtube player
@@ -32,3 +42,4 @@ def render_youtube(self, tokens, idx, options, env):
 
 md = MarkdownIt("commonmark")
 md.add_render_rule("image", render_youtube)
+md.add_render_rule("link_open", render_blank_link)
