@@ -29,9 +29,9 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
+    recent_post_list = PostModelStorage.get_recent_posts()
     posts = PostModelStorage.get_all_published_posts()
-    post_list = PostModelStorage.get_recent_posts()
-    return render_template("home.html", posts=posts, post_list=post_list)
+    return render_template("home.html", recent_post_list=recent_post_list, posts=posts)
 
 
 @main.route("/about")
