@@ -192,6 +192,39 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertIsNone(draft_post.published_at)
         self.assertNotEqual(draft_post.updated_at, post.created_at)
 
+    def test_search_posts(self):
+        post1 = Post(
+            title="Fake Title",
+            slug="fake-title",
+            description="Post description",
+            source="Here's a post. Find me later!",
+        )
+        post2 = Post(
+            title="Fake Title 2",
+            slug="fake-title-2",
+            description="Post description",
+            source="Here's a post. Find me later, round two!",
+        )
+        db.session.add_all([post1, post2])
+        db.session.commit()
+
+        # publish one of the new posts
+        post = Post.query.filter_by(title="Fake Title").first()
+
+        now = datetime.utcnow()
+        post.state = PostStatus.PUBLISHED
+        post.updated_at = now
+        post.published_at = now
+
+        db.session.add(post)
+        db.session.commit()
+
+        found_posts = PostModelStorage.search_posts("find me")
+
+        self.assertIsNotNone(found_posts)
+        self.assertEqual(len(found_posts), 1)
+        self.assertIn("Find me", found_posts[0].source)
+
 
 class UserModelStorageTestCase(unittest.TestCase):
     def setUp(self):

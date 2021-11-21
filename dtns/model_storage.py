@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import desc
+from sqlalchemy import func
 
 from dtns import db
 from dtns.constants import PostStatus
@@ -121,6 +122,16 @@ class PostModelStorage(BaseModelStorage):
 
         db.session.add(post)
         db.session.commit()
+
+    @classmethod
+    def search_posts(cls, search_terms):
+        """
+        Return published posts with source containing given search terms
+        """
+        return cls.model.query.filter(
+            func.lower(Post.source).like(f"%{search_terms}%"),
+            Post.state == PostStatus.PUBLISHED,
+        ).all()
 
 
 class UserModelStorage(BaseModelStorage):
