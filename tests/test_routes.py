@@ -143,6 +143,13 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
         self.assertEqual(response.status_code, 401)
 
+    def test_health_check_as_user(self):
+        response = self.client.get("/health")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response_text, "")
+
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):

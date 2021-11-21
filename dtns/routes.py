@@ -16,6 +16,7 @@ from flask_login.utils import login_required
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 
+from dtns import db
 from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
 from dtns.forms import ImageUploadForm
@@ -213,3 +214,9 @@ def image_manager():
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
+
+
+@main.route("/health")
+def health_check():
+    db.engine.execute("SELECT 1")
+    return ""
