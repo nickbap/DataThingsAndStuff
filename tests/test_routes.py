@@ -72,6 +72,7 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Data Things & Stuff", response_text)
+        self.assertIn("Search", response_text)
         for post in self.published_posts:
             self.assertIn(post.title, response_text)
             self.assertIn(post.slug, response_text)
