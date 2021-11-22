@@ -151,6 +151,35 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_text, "")
 
+    def test_search(self):
+        # create post to find
+        post = Post(
+            title="New Fake Title To Find",
+            slug="new-fake-title-to-find",
+            description="Post description",
+            source="Here's a post. Find me later!",
+        )
+        db.session.add(post)
+        db.session.commit()
+
+        # publish the new post
+        post = Post.query.filter_by(title="New Fake Title To Find").first()
+
+        now = datetime.utcnow()
+        post.state = PostStatus.PUBLISHED
+        post.updated_at = now
+        post.published_at = now
+
+        db.session.add(post)
+        db.session.commit()
+
+        search_data = {"search": "find"}
+        response = self.client.post("/search", data=search_data)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("New Fake Title To Find", response_text)
+
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):

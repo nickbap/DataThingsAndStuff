@@ -6,6 +6,7 @@ from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
+from flask import render_template_string
 from flask import request
 from flask import send_from_directory
 from flask import url_for
@@ -208,6 +209,23 @@ def image_manager():
         flash(f'Sucessfully uploaded "{filename}"', "success")
         return redirect(url_for("main.image_manager"))
     return render_template("image-manager.html", form=form, image_list=image_list)
+
+
+@main.route("/search", methods=["POST"])
+def search_posts():
+    search_terms = request.form["search"]
+    posts = PostModelStorage.search_posts(search_terms)
+    posts_template = """
+    {% for post in posts %}
+        <div class="border p-4 mb-2 shadow-sm">
+            <h3 class="mb-0">{{ post.title }}</h3>
+            <p class="mb-1 text-muted">{{ post.published_at.strftime('%B %-d, %Y') }}</p>
+            <p class="card-text mb-auto">{{ post.description }}</p>
+            <a href="{{ url_for('main.post', slug=post.slug) }}">Continue reading</a>
+        </div>
+    {% endfor %}
+    """
+    return render_template_string(posts_template, posts=posts)
 
 
 @main.route("/logout")

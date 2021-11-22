@@ -43,10 +43,11 @@
                     {% endif %}
                 </ul>
                 {% if request.endpoint == 'main.index' %}
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-secondary" type="submit">Search</button>
-                </form>
+                <div class="d-flex">
+                    <input class="f-flex form-control me-2" type="text" name="search" placeholder="Search Posts"
+                        hx-post="/search" hx-trigger="keyup changed delay:500ms" hx-target="#search-results"
+                        hx-indicator=".htmx-indicator">
+                </div>
                 {% endif %}
             </div>
         </div>
