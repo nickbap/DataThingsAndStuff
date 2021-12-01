@@ -74,7 +74,7 @@ def create():
         data = {
             "title": form.title.data,
             "slug": form.slug.data,
-            "description": form.slug.data,
+            "description": form.description.data,
             "source": form.source.data,
         }
         PostModelStorage.create_post(data)
@@ -94,7 +94,7 @@ def edit(post_id):
         data = {
             "title": form.title.data,
             "slug": form.slug.data,
-            "description": form.slug.data,
+            "description": form.description.data,
             "source": form.source.data,
         }
 
