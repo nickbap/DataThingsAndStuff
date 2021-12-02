@@ -32,10 +32,12 @@ def render_youtube(self, tokens, idx, options, env):
             ident = query_params["v"][0]
 
         return (
+            '<div class="ratio ratio-16x9">\n'
             f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{ident}"'
             + ' title="YouTube video player"\n'
             + 'frameborder="0" allow="accelerometer; autoplay; clipboard-write;'
-            + ' encrypted-media; gyroscope; picture-in-picture"\n allowfullscreen></iframe>'
+            + ' encrypted-media; gyroscope; picture-in-picture"\n allowfullscreen></iframe>\n'
+            + "</div>"
         )
     return self.image(tokens, idx, options, env)
 
