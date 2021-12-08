@@ -1,6 +1,8 @@
 import unittest
 from datetime import datetime
 
+from freezegun import freeze_time
+
 from dtns import create_app
 from dtns import db
 from dtns.constants import PostStatus
@@ -37,6 +39,7 @@ class PostModelStorageTestCase(unittest.TestCase):
         db.session.commit()
 
     def tearDown(self):
+        db.session.commit()
         db.drop_all()
         self.app_context.pop()
 
@@ -162,6 +165,7 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertEqual(updated_post.source, updated_source)
         self.assertFalse(updated_post.updated_at < post.updated_at)
 
+    @freeze_time("2021-12-07")
     def test_publish_post(self):
         post = Post.query.first()
 
@@ -172,6 +176,7 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertIsNotNone(published_post.published_at)
         self.assertNotEqual(published_post.updated_at, post.created_at)
 
+    @freeze_time("2021-12-07")
     def test_archive_post(self):
         post = Post.query.first()
 
@@ -182,6 +187,7 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertIsNone(archived_post.published_at)
         self.assertNotEqual(archived_post.updated_at, post.created_at)
 
+    @freeze_time("2021-12-07")
     def test_mark_post_as_draft(self):
         post = Post.query.first()
 
@@ -247,6 +253,7 @@ class UserModelStorageTestCase(unittest.TestCase):
             db.session.commit()
 
     def tearDown(self):
+        db.session.commit()
         db.drop_all()
         self.app_context.pop()
 

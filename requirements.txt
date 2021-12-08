@@ -6,4 +6,5 @@ flask-migrate
 flask-sqlalchemy
 Flask-WTF
 markdown-it-py
+pymysql
 python-dotenv

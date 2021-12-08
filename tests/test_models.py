@@ -35,6 +35,7 @@ class PostModelTestCase(unittest.TestCase):
         db.session.commit()
 
     def tearDown(self):
+        db.session.commit()
         db.drop_all()
         self.app_context.pop()
 
@@ -113,6 +114,7 @@ class UserModelTestCase(unittest.TestCase):
         self.password = "test_password"
 
     def tearDown(self):
+        db.session.commit()
         db.drop_all()
         self.app_context.pop()
 

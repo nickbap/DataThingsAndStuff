@@ -3,6 +3,7 @@ black
 coverage
 flake8
 flake8-assertive
+freezegun
 isort
 pep8-naming
 Pillow

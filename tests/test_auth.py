@@ -28,6 +28,7 @@ class AuthTestCase(unittest.TestCase):
         db.session.commit()
 
     def tearDown(self):
+        db.session.commit()
         db.drop_all()
         self.app_context.pop()
 

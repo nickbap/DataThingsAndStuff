@@ -58,6 +58,7 @@ class BaseRouteTestCase(unittest.TestCase):
         if os.path.isfile(test_file_path):
             os.remove(test_file_path)
 
+        db.session.commit()
         db.drop_all()
         self.app_context.pop()
 
