@@ -133,6 +133,12 @@ class PostModelStorage(BaseModelStorage):
             Post.state == PostStatus.PUBLISHED,
         ).all()
 
+    @classmethod
+    def get_posts_by_month_year(cls, month_year):
+        return cls.model.query.filter(
+            (func.date_format(Post.published_at, "%M %Y") == month_year)
+        ).all()
+
 
 class UserModelStorage(BaseModelStorage):
     model = User

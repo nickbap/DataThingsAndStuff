@@ -231,6 +231,41 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertEqual(len(found_posts), 1)
         self.assertIn("Find me", found_posts[0].source)
 
+    def test_get_posts_by_month_year(self):
+        # "publish" posts
+        for i in range(8):
+            post = self.posts[i]
+            if i <= 4:
+                freezer = freeze_time("2021-11-01 12:00:00")
+                freezer.start()
+
+                now = datetime.utcnow()
+                post.state = PostStatus.PUBLISHED
+                post.updated_at = now
+                post.published_at = now
+
+                db.session.add(post)
+                db.session.commit()
+                freezer.stop()
+            else:
+                freezer = freeze_time("2021-12-01 12:00:00")
+                freezer.start()
+
+                now = datetime.utcnow()
+                post.state = PostStatus.PUBLISHED
+                post.updated_at = now
+                post.published_at = now
+
+                db.session.add(post)
+                db.session.commit()
+                freezer.stop()
+
+        posts = PostModelStorage.get_posts_by_month_year("November 2021")
+
+        self.assertEqual(len(posts), 5)
+        for post in posts:
+            self.assertEqual(post.published_at.strftime("%B %Y"), "November 2021")
+
 
 class UserModelStorageTestCase(unittest.TestCase):
     def setUp(self):
