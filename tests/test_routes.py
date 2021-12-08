@@ -2,6 +2,7 @@ import io
 import os
 import unittest
 from datetime import datetime
+from urllib.parse import quote
 
 from PIL import Image
 from PIL import ImageDraw
@@ -74,6 +75,7 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Data Things & Stuff", response_text)
         self.assertIn("Search", response_text)
+        self.assertIn("Archive", response_text)
         for post in self.published_posts:
             self.assertIn(post.title, response_text)
             self.assertIn(post.slug, response_text)
@@ -180,6 +182,16 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("New Fake Title To Find", response_text)
+
+    def test_post_archive(self):
+        today = datetime.utcnow().strftime("%B %Y")
+        url = f"/posts/{quote(today)}"
+
+        response = self.client.get(url)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(f'Results for: "{today}"', response_text)
 
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):

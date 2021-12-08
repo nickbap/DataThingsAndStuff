@@ -1,5 +1,6 @@
 import os
 from datetime import date
+from urllib.parse import unquote
 
 from flask import Blueprint
 from flask import current_app
@@ -25,6 +26,7 @@ from dtns.forms import LoginForm
 from dtns.model_storage import PostModelStorage
 from dtns.model_storage import UserModelStorage
 from dtns.utils import image_utils
+from dtns.utils import post_utils
 
 main = Blueprint("main", __name__)
 
@@ -33,7 +35,13 @@ main = Blueprint("main", __name__)
 def index():
     recent_post_list = PostModelStorage.get_recent_posts()
     posts = PostModelStorage.get_all_published_posts()
-    return render_template("home.html", recent_post_list=recent_post_list, posts=posts)
+    post_archive = post_utils.aggregate_and_sort_posts_by_month_year(posts)
+    return render_template(
+        "home.html",
+        recent_post_list=recent_post_list,
+        posts=posts,
+        post_archive=post_archive,
+    )
 
 
 @main.route("/about")
@@ -226,6 +234,26 @@ def search_posts():
     {% endfor %}
     """
     return render_template_string(posts_template, posts=posts)
+
+
+@main.route("/posts/<month_year>")
+def posts_month_year(month_year):
+    posts = PostModelStorage.get_posts_by_month_year(unquote(month_year))
+    posts_template = """
+    <div class="text-center pb-1">
+        <span>Results for: "{{ month_year }}" <a class="text-reset" href="{{ url_for('main.index') }}"><i
+                    class="bi bi-x"></i></a></span>
+    </div>
+    {% for post in posts %}
+        <div class="border p-4 mb-2 shadow-sm">
+            <h3 class="mb-0">{{ post.title }}</h3>
+            <p class="mb-1 text-muted">{{ post.published_at.strftime('%B %-d, %Y') }}</p>
+            <p class="card-text mb-auto">{{ post.description }}</p>
+            <a href="{{ url_for('main.post', slug=post.slug) }}">Continue reading</a>
+        </div>
+    {% endfor %}
+    """
+    return render_template_string(posts_template, month_year=month_year, posts=posts)
 
 
 @main.route("/logout")
