@@ -182,6 +182,7 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("New Fake Title To Find", response_text)
+        self.assertIn('Results for: "find"', response_text)
 
     def test_post_archive(self):
         today = datetime.utcnow().strftime("%B %Y")

@@ -224,6 +224,10 @@ def search_posts():
     search_terms = request.form["search"]
     posts = PostModelStorage.search_posts(search_terms)
     posts_template = """
+    <div class="text-center pb-1">
+        <span>Results for: "{{ search_terms }}" <a class="text-reset" href="{{ url_for('main.index') }}"><i
+                    class="bi bi-x"></i></a></span>
+    </div>
     {% for post in posts %}
         <div class="border p-4 mb-2 shadow-sm">
             <h3 class="mb-0">{{ post.title }}</h3>
@@ -233,7 +237,9 @@ def search_posts():
         </div>
     {% endfor %}
     """
-    return render_template_string(posts_template, posts=posts)
+    return render_template_string(
+        posts_template, search_terms=search_terms, posts=posts
+    )
 
 
 @main.route("/posts/<month_year>")
