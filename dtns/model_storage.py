@@ -129,7 +129,7 @@ class PostModelStorage(BaseModelStorage):
         Return published posts with source containing given search terms
         """
         return cls.model.query.filter(
-            func.lower(Post.source).like(f"%{search_terms}%"),
+            func.lower(Post.source).like(f"%{search_terms.lower()}%"),
             Post.state == PostStatus.PUBLISHED,
         ).all()
 
