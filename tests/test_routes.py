@@ -194,6 +194,13 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(f'Results for: "{today}"', response_text)
 
+    def tset_404_page(self):
+        response = self.client.get("/nope")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Sorry, we can't find what you're looking for...", response_text)
+
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):

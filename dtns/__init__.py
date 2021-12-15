@@ -37,6 +37,10 @@ def create_app(testing_config=None):
 
     app.register_blueprint(main)
 
+    from dtns.errors import error
+
+    app.register_blueprint(error)
+
     from dtns import models  # noqa: F401
 
     if app.debug:
