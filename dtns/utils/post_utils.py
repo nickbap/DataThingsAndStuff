@@ -1,5 +1,15 @@
 from datetime import datetime
 
+alert_template = """
+    <div class="py-2">
+        <div id="alerts" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button id="alert-button" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+            hx-trigger="click, keyup[Escape] from:body"></button>
+        </div>
+    </div>
+    """
+
 post_list_template = """
     <div class="text-center pb-1">
         <span>Results for: "{{ criteria }}" <a class="text-reset" href="{{ url_for('main.index') }}"><i

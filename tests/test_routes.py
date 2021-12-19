@@ -284,6 +284,21 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("updated", response_text)
 
+    def test_save_post_as_admin(self):
+        save_post_data = {
+            "title": "Saved title",
+            "slug": "updated-slug",
+            "description": "saved description",
+            "source": "saved source",
+        }
+        response = self.client.post(
+            "/save/1", data=save_post_data, follow_redirects=True
+        )
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Saved at", response_text)
+
     def test_preview_page_as_admin(self):
         response = self.client.get("/preview/slug-1")
         response_text = response.get_data(as_text=True)
