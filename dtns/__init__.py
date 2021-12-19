@@ -41,6 +41,10 @@ def create_app(testing_config=None):
 
     app.register_blueprint(error)
 
+    from dtns.ajax import ajax
+
+    app.register_blueprint(ajax)
+
     from dtns import models  # noqa: F401
 
     if app.debug:

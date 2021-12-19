@@ -65,7 +65,7 @@
             <h4>Archive</h4>
             <ul>
                 {% for post in post_archive %}
-                <li><a href hx-get="{{ url_for('main.posts_month_year', month_year=post) }}" hx-target="#search-results"
+                <li><a href hx-get="{{ url_for('ajax.posts_month_year', month_year=post) }}" hx-target="#search-results"
                         hx-indicator=".htmx-indicator">{{ post }}</a></li>
                 {% endfor %}
             </ul>

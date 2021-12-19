@@ -1,6 +1,5 @@
 import os
 from datetime import date
-from urllib.parse import unquote
 
 from flask import Blueprint
 from flask import abort
@@ -8,7 +7,6 @@ from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
-from flask import render_template_string
 from flask import request
 from flask import send_from_directory
 from flask import url_for
@@ -222,23 +220,6 @@ def image_manager():
         flash(f'Sucessfully uploaded "{filename}"', "success")
         return redirect(url_for("main.image_manager"))
     return render_template("image-manager.html", form=form, image_list=image_list)
-
-
-@main.route("/search", methods=["POST"])
-def search_posts():
-    search_terms = request.form["search"]
-    posts = PostModelStorage.search_posts(search_terms)
-    return render_template_string(
-        post_utils.post_list_template, criteria=search_terms, posts=posts
-    )
-
-
-@main.route("/posts/<month_year>")
-def posts_month_year(month_year):
-    posts = PostModelStorage.get_posts_by_month_year(unquote(month_year))
-    return render_template_string(
-        post_utils.post_list_template, criteria=month_year, posts=posts
-    )
 
 
 @main.route("/logout")
