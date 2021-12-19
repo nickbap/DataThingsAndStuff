@@ -3,6 +3,7 @@ from datetime import date
 from urllib.parse import unquote
 
 from flask import Blueprint
+from flask import abort
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -168,6 +169,8 @@ def draft(post_id):
 def preview(slug):
     recent_post_list = PostModelStorage.get_recent_posts()
     post = PostModelStorage.get_post_by_slug(slug)
+    if not post:
+        abort(404)
     return render_template("post.html", recent_post_list=recent_post_list, post=post)
 
 
@@ -175,6 +178,8 @@ def preview(slug):
 def post(slug):
     recent_post_list = PostModelStorage.get_recent_posts()
     post = PostModelStorage.get_post_by_slug(slug)
+    if not post:
+        abort(404)
     return render_template("post.html", recent_post_list=recent_post_list, post=post)
 
 

@@ -59,7 +59,10 @@ class PostModelStorage(BaseModelStorage):
 
     @classmethod
     def get_post_by_slug(cls, slug):
-        return cls.filter_(slug=slug)[0]
+        post = cls.filter_(slug=slug)
+        if not post:
+            return
+        return post[0]
 
     @classmethod
     def create_post(cls, data):

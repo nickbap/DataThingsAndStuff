@@ -134,6 +134,13 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertIn("Title 1", response_text)
         self.assertIn("slug-1", response_text)
 
+    def test_post_route_as_user_for_non_exist_post(self):
+        response = self.client.get("/post/cant-find-me")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Sorry, we can't find what you're looking for...", response_text)
+
     def test_image_manager_route_as_user(self):
         response = self.client.get("/image-manager")
 
@@ -194,7 +201,7 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(f'Results for: "{today}"', response_text)
 
-    def tset_404_page(self):
+    def test_404_page(self):
         response = self.client.get("/nope")
         response_text = response.get_data(as_text=True)
 
@@ -272,6 +279,13 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertIn("Publish", response_text)
         self.assertIn("Archive", response_text)
         self.assertIn("Draft", response_text)
+
+    def test_preview_page_as_admin_for_non_exist_post(self):
+        response = self.client.get("/preview/you-wont-find-me")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Sorry, we can't find what you're looking for...", response_text)
 
     def test_publish_route_as_admin(self):
         response = self.client.post("/publish/4", follow_redirects=True)

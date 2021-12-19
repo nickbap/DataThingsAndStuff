@@ -129,6 +129,11 @@ class PostModelStorageTestCase(unittest.TestCase):
         self.assertIsNotNone(post)
         self.assertTrue(post.slug, "slug-5")
 
+    def test_get_post_by_slug_returns_none_for_non_exist_post(self):
+        post = PostModelStorage.get_post_by_slug("you-wont-findme")
+
+        self.assertIsNone(post)
+
     def test_create_post(self):
         data = {
             "title": "A Fake Post for Testing",
