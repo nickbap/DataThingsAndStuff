@@ -45,6 +45,10 @@
                             hx-target="#alerts"
                             hx-post="{{ url_for('ajax.save_post', post_id=post.id) }}">Save
                         </button>
+                        <button class="btn btn-primary m-2">
+                            <a href="{{ url_for('main.preview', slug=post.slug) }}"
+                                class="text-decoration-none text-reset">Full Preview</a>
+                        </button>
                         {% endif %}
                     </div>
                 </form>
