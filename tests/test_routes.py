@@ -98,33 +98,45 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
     def test_create_route_as_user(self):
         response = self.client.get("/create")
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_edit_route_as_user(self):
         response = self.client.get("/edit/1")
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_publish_route_as_user(self):
         response = self.client.post("/publish/1")
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_archive_route_as_user(self):
         response = self.client.post("/archive/1")
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_draft_route_as_user(self):
         response = self.client.post("/draft/1")
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_preview_route_as_user(self):
         response = self.client.get("/preview/slug-1")
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_post_route_as_user(self):
         response = self.client.get("/post/slug-1")
@@ -143,16 +155,20 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
     def test_image_manager_route_as_user(self):
         response = self.client.get("/image-manager")
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_upload_image_as_user(self):
         data = {}
         data["file"] = (io.BytesIO(b"abcdef"), self.filename)
 
         response = self.client.post("/image-manager", data=data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_health_check_as_user(self):
         response = self.client.get("/health")
