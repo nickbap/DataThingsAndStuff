@@ -8,3 +8,4 @@ Flask-WTF
 markdown-it-py
 pymysql
 python-dotenv
+sentry-sdk[flask]

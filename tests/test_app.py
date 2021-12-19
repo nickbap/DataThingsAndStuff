@@ -21,6 +21,9 @@ class TestingAppTestCase(unittest.TestCase):
     def test_app_is_not_debugging(self):
         self.assertFalse(current_app.config["DEBUG"])
 
+    def test_sentry_dsn_is_none(self):
+        self.assertIsNone(current_app.config["SENTRY_DSN"])
+
 
 class AppConfigTestCase(unittest.TestCase):
     def setUp(self):
@@ -40,3 +43,6 @@ class AppConfigTestCase(unittest.TestCase):
 
     def test_app_is_not_debugging(self):
         self.assertFalse(current_app.config["DEBUG"])
+
+    def test_sentry_dsn_is_not_none(self):
+        self.assertIsNotNone(current_app.config["SENTRY_DSN"])

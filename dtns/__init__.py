@@ -1,8 +1,10 @@
+import sentry_sdk
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 from config import config
 
@@ -17,6 +19,12 @@ def create_app(testing_config=None):
 
     if testing_config is None:
         app.config.from_object(config["config"])
+
+        sentry_sdk.init(
+            dsn=app.config["SENTRY_DSN"],
+            integrations=[FlaskIntegration()],
+            traces_sample_rate=1.0,
+        )
     else:
         app.config.from_object(config["testing"])
 
@@ -31,7 +39,7 @@ def create_app(testing_config=None):
 
     from dtns import models  # noqa: F401
 
-    if app.config["DEBUG"]:
+    if app.debug:
         from dtns import model_storage  # noqa: F401
 
         @app.shell_context_processor

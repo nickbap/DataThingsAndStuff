@@ -13,12 +13,14 @@ class Config:
     ) or "sqlite:///" + os.path.join(basedir, "dtns.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = "uploads"
+    SENTRY_DSN = os.environ.get("SENTRY_DSN")
 
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_TEST_DATABASE_URI")
     TESTING = True
     WTF_CSRF_ENABLED = False
+    SENTRY_DSN = None
 
 
 config = {

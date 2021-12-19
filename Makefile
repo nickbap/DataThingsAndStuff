@@ -1,5 +1,5 @@
 dev:
-	FLASK_ENV=development flask run
+	FLASK_ENV=development SENTRY_ENVIRONMENT=development flask run
 
 tests:
 	python tests.py
