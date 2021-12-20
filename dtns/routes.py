@@ -193,13 +193,17 @@ def download_file(name):
 @login_required
 def image_manager():
     form = ImageUploadForm()
-    image_list = [
-        image
-        for image in os.listdir(
-            os.path.join(current_app.static_folder, current_app.config["UPLOAD_FOLDER"])
-        )
-        if image_utils.is_valid_image_type(image)
-    ]
+    image_list = sorted(
+        [
+            image
+            for image in os.listdir(
+                os.path.join(
+                    current_app.static_folder, current_app.config["UPLOAD_FOLDER"]
+                )
+            )
+            if image_utils.is_valid_image_type(image)
+        ]
+    )
     if request.method == "POST":
         file_upload = request.files["file"]
         filename = secure_filename(file_upload.filename)
