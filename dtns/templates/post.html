@@ -12,10 +12,21 @@
             {% if post %}
             <h1>{{ post.title }}</h1>
             {% if post.state == 'published' %}
-            <p class="mb-1 text-muted">{{ post.published_at.strftime('%B %-d, %Y') }}</p>
-            {% else %}
-            <p class="mb-1 text-muted">{{ post.created_at.strftime('%B %-d, %Y') }}</p>
-            {% endif %}
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1 text-muted">{{ post.published_at.strftime('%B %-d, %Y') }}</p>
+                    {% else %}
+                    <p class="mb-1 text-muted">{{ post.created_at.strftime('%B %-d, %Y') }}</p>
+                    {% endif %}
+                </div>
+                <div class="d-flex jusitify-content-center align-items-center py-1">
+                    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button"
+                        data-show-count="false">Tweet</a>
+                    <a data-pin-do="buttonBookmark" data-pin-tall="true" data-pin-round="true"
+                        href="https://www.pinterest.com/pin/create/button/"><img
+                            src="//assets.pinterest.com/images/pidgets/pinit_fg_en_round_red_32.png" /></a>
+                </div>
+            </div>
             <div id="post-content" class="border-top py-4">
                 {{ post.html | safe }}
             </div>
@@ -64,4 +75,6 @@
         });
     });
 </script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script async defer src="//assets.pinterest.com/js/pinit.js"></script>
 {% endblock %}
