@@ -18,6 +18,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 
 from dtns import db
+from dtns.constants import POST_STATUS_STYLE
 from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
 from dtns.forms import ImageUploadForm
@@ -69,7 +70,9 @@ def admin():
             )
         else:
             flash("Something went wrong with your login! Please try again.", "danger")
-    return render_template("admin.html", form=form, posts=posts)
+    return render_template(
+        "admin.html", form=form, posts=posts, POST_STATUS_STYLE=POST_STATUS_STYLE
+    )
 
 
 @main.route("/create", methods=["GET", "POST"])
