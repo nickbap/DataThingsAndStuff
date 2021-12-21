@@ -325,3 +325,19 @@ class UserModelStorageTestCase(unittest.TestCase):
 
         self.assertIsNotNone(user)
         self.assertEqual(user.email, "test_1@test.com")
+
+    def test_get_user_by_email_with_upper_email(self):
+        user = UserModelStorage.get_user_by_email("TEST_1@TEST.COM")
+
+        self.assertIsNotNone(user)
+        self.assertEqual(user.email, "test_1@test.com")
+
+    def test_get_user_by_email_returns_none_when_no_email_passed(self):
+        user = UserModelStorage.get_user_by_email("")
+
+        self.assertIsNone(user)
+
+    def test_get_user_by_email_returns_none_when_no_user_found_for_email(self):
+        user = UserModelStorage.get_user_by_email("wont-find-me@test.com")
+
+        self.assertIsNone(user)

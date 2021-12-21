@@ -148,4 +148,12 @@ class UserModelStorage(BaseModelStorage):
 
     @classmethod
     def get_user_by_email(cls, email):
-        return cls.filter_(email=email)[0]
+        if not email:
+            return
+
+        user = cls.filter_(email=email.lower())
+
+        if not user:
+            return
+
+        return user[0]
