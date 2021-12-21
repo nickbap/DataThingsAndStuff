@@ -1,5 +1,9 @@
 {% extends '_base.html' %}
 
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css" />
+{% endblock %}
+
 {% block content %}
 <main class="container py-3">
     {% include 'components/alerts.html' %}
@@ -46,8 +50,8 @@
                 </div>
                 <div id="post-table">
                     {% if posts %}
-                    <div class="table-responsive">
-                        <table class="table">
+                    <div class="table-responsive py-3">
+                        <table id="data" class="table">
                             <thead>
                                 <tr>
                                     <th scope="col">Title</th>
@@ -83,4 +87,15 @@
         {% endif %}
     </div>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.11.3/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#data').DataTable({
+            "pageLength": 25
+        });
+    });
+</script>
 {% endblock %}
