@@ -42,6 +42,6 @@ def render_youtube(self, tokens, idx, options, env):
     return self.image(tokens, idx, options, env)
 
 
-md = MarkdownIt("commonmark")
+md = MarkdownIt("commonmark").enable("strikethrough")
 md.add_render_rule("image", render_youtube)
 md.add_render_rule("link_open", render_blank_link)
