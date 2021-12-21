@@ -210,7 +210,7 @@ def image_manager():
     if request.method == "POST":
         file_upload = request.files["file"]
         filename = secure_filename(file_upload.filename)
-        if not image_utils.is_valid_image(filename):
+        if not image_utils.is_valid_image(filename) or filename in image_list:
             flash(
                 "Something went wrong with your upload. Please check and try again.",
                 "danger",
