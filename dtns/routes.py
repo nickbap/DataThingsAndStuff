@@ -196,7 +196,7 @@ def download_file(name):
 def image_manager():
     form = ImageUploadForm()
     image_manager = image_utils.ImageManager(current_app)
-    image_list = image_manager.get_all_images_sorted()
+    image_list = image_manager.get_all_images()
     if request.method == "POST":
         file_upload = request.files["file"]
         filename = image_manager.save_image(file_upload)

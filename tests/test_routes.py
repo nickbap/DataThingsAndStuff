@@ -426,3 +426,24 @@ class ServeUploadTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, "image/jpeg")
+
+
+class AJAXRouteTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app("testing")
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
+
+    def tearDown(self):
+        self.app_context.pop()
+
+    def test_sort_image_manager_images_asc_1(self):
+        response = self.client.get("/image-manager/sort?asc=1")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_sort_image_manager_images_asc_0(self):
+        response = self.client.get("/image-manager/sort?asc=0")
+
+        self.assertEqual(response.status_code, 200)

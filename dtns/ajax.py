@@ -2,10 +2,12 @@ from datetime import datetime
 from urllib.parse import unquote
 
 from flask import Blueprint
+from flask import current_app
 from flask import render_template_string
 from flask import request
 
 from dtns.model_storage import PostModelStorage
+from dtns.utils import image_utils
 from dtns.utils import post_utils
 
 ajax = Blueprint("ajax", __name__)
@@ -43,4 +45,14 @@ def save_post(post_id):
         post_utils.alert_template,
         category="success",
         message=f"Saved at { datetime.utcnow().strftime('%H:%M:%S') }!",
+    )
+
+
+@ajax.route("/image-manager/sort")
+def sort_image_manager_images():
+    option = bool(int(request.args["asc"]))
+    image_manager = image_utils.ImageManager(current_app)
+    image_list = image_manager.get_all_images_sorted(asc=option)
+    return render_template_string(
+        image_utils.image_list_template, image_list=image_list
     )

@@ -14,7 +14,20 @@
     <div class="container">
         {% if image_list %}
         <h2 class="py-3">Available Images</h2>
-        <div class="container d-flex flex-wrap">
+        <div class="d-flex justify-content-evenly">
+            <a class="text-reset" href hx-get="{{ url_for('ajax.sort_image_manager_images', asc=1) }}"
+                hx-target="#images">
+                <i class="bi bi-arrow-up"></i>
+            </a>
+            <div>
+                Sort Images
+            </div>
+            <a class="text-reset" href hx-get="{{ url_for('ajax.sort_image_manager_images', asc=0) }}"
+                hx-target="#images">
+                <i class="bi bi-arrow-down"></i>
+            </a>
+        </div>
+        <div id="images" class="container d-flex flex-wrap">
             {% for image in image_list %}
             <div class="p-2">
                 <div class="d-flex justify-content-center">
