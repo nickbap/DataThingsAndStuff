@@ -15,7 +15,6 @@ from flask_login import login_user
 from flask_login import logout_user
 from flask_login.utils import login_required
 from werkzeug.security import check_password_hash
-from werkzeug.utils import secure_filename
 
 from dtns import db
 from dtns.constants import POST_STATUS_STYLE
@@ -196,34 +195,17 @@ def download_file(name):
 @login_required
 def image_manager():
     form = ImageUploadForm()
-    image_list = sorted(
-        [
-            image
-            for image in os.listdir(
-                os.path.join(
-                    current_app.static_folder, current_app.config["UPLOAD_FOLDER"]
-                )
-            )
-            if image_utils.is_valid_image_type(image)
-        ]
-    )
+    image_manager = image_utils.ImageManager(current_app)
+    image_list = image_manager.get_all_images_sorted()
     if request.method == "POST":
         file_upload = request.files["file"]
-        filename = secure_filename(file_upload.filename)
-        if not image_utils.is_valid_image(filename) or filename in image_list:
+        filename = image_manager.save_image(file_upload)
+        if not filename:
             flash(
                 "Something went wrong with your upload. Please check and try again.",
                 "danger",
             )
             return redirect(url_for("main.image_manager"))
-
-        file_upload.save(
-            os.path.join(
-                current_app.static_folder,
-                current_app.config["UPLOAD_FOLDER"],
-                filename,
-            ),
-        )
         flash(f'Sucessfully uploaded "{filename}"', "success")
         return redirect(url_for("main.image_manager"))
     return render_template("image-manager.html", form=form, image_list=image_list)
