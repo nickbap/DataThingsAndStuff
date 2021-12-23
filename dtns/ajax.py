@@ -56,3 +56,14 @@ def sort_image_manager_images():
     return render_template_string(
         image_utils.image_list_template, image_list=image_list
     )
+
+
+@ajax.route("/image-manager/delete")
+def delete_image_manager_image():
+    image = request.args["image"]
+    image_manager = image_utils.ImageManager(current_app)
+    image_manager.delete_image(image)
+    image_list = image_manager.get_all_images()
+    return render_template_string(
+        image_utils.image_list_template, image_list=image_list
+    )

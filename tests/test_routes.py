@@ -447,3 +447,8 @@ class AJAXRouteTestCase(unittest.TestCase):
         response = self.client.get("/image-manager/sort?asc=0")
 
         self.assertEqual(response.status_code, 200)
+
+    def test_delete_image_manager_image(self):
+        response = self.client.get("/image-manager/delete?image=fake.jpg")
+
+        self.assertEqual(response.status_code, 200)
