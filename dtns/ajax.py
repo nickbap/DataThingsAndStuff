@@ -5,6 +5,7 @@ from flask import Blueprint
 from flask import current_app
 from flask import render_template_string
 from flask import request
+from flask_login.utils import login_required
 
 from dtns.model_storage import PostModelStorage
 from dtns.utils import image_utils
@@ -31,6 +32,7 @@ def posts_month_year(month_year):
 
 
 @ajax.route("/save/<post_id>", methods=["POST"])
+@login_required
 def save_post(post_id):
     data = {
         "title": request.form["title"],
@@ -49,6 +51,7 @@ def save_post(post_id):
 
 
 @ajax.route("/image-manager/sort")
+@login_required
 def sort_image_manager_images():
     option = bool(int(request.args["asc"]))
     image_manager = image_utils.ImageManager(current_app)
@@ -59,6 +62,7 @@ def sort_image_manager_images():
 
 
 @ajax.route("/image-manager/delete")
+@login_required
 def delete_image_manager_image():
     image = request.args["image"]
     image_manager = image_utils.ImageManager(current_app)

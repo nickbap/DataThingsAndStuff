@@ -170,6 +170,34 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 401)
         self.assertIn("No no, you're not allowed to do that...", response_text)
 
+    def test_save_post_as_user(self):
+        save_post_data = {
+            "title": "Saved title",
+            "slug": "updated-slug",
+            "description": "saved description",
+            "source": "saved source",
+        }
+        response = self.client.post(
+            "/save/1", data=save_post_data, follow_redirects=True
+        )
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_delete_image_manager_image_as_user(self):
+        response = self.client.get("/image-manager/delete?image=fake.jpg")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_sort_image_manager_images_asc_1_as_user(self):
+        response = self.client.get("/image-manager/sort?asc=1")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_sort_image_manager_images_asc_0_as_user(self):
+        response = self.client.get("/image-manager/sort?asc=0")
+
+        self.assertEqual(response.status_code, 401)
+
     def test_health_check_as_user(self):
         response = self.client.get("/health")
         response_text = response.get_data(as_text=True)
@@ -395,6 +423,21 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertNotIn("test-image.tiff", response_text)
         self.assertIn("danger", response_text)
 
+    def test_delete_image_manager_image_as_admin(self):
+        response = self.client.get("/image-manager/delete?image=fake.jpg")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_sort_image_manager_images_asc_1_as_admin(self):
+        response = self.client.get("/image-manager/sort?asc=1")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_sort_image_manager_images_asc_0_as_admin(self):
+        response = self.client.get("/image-manager/sort?asc=0")
+
+        self.assertEqual(response.status_code, 200)
+
 
 def create_test_image():
     img = Image.new(mode="RGB", size=(200, 200))
@@ -426,29 +469,3 @@ class ServeUploadTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, "image/jpeg")
-
-
-class AJAXRouteTestCase(unittest.TestCase):
-    def setUp(self):
-        self.app = create_app("testing")
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        self.client = self.app.test_client()
-
-    def tearDown(self):
-        self.app_context.pop()
-
-    def test_sort_image_manager_images_asc_1(self):
-        response = self.client.get("/image-manager/sort?asc=1")
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_sort_image_manager_images_asc_0(self):
-        response = self.client.get("/image-manager/sort?asc=0")
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_delete_image_manager_image(self):
-        response = self.client.get("/image-manager/delete?image=fake.jpg")
-
-        self.assertEqual(response.status_code, 200)
