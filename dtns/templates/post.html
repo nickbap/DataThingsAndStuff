@@ -7,6 +7,7 @@
 
 {% block content %}
 <main class="container">
+    {% include 'components/alerts.html' %}
     <div class="row pt-5">
         <div class="col-md-8">
             {% if post %}
@@ -25,7 +26,7 @@
             {% include 'components/recent-posts.html' %}
         </div>
     </div>
-    {% if 'preview' in request.endpoint %}
+    {% if 'preview' in request.endpoint and 'temp' not in request.endpoint%}
     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <button type="button" class="btn btn-danger">
             <a href="{{ url_for('main.edit', post_id=post.id) }}" class="text-decoration-none text-reset">Edit</a>
@@ -50,6 +51,9 @@
             {% else %}
             <button type="submit" class="btn btn-warning">Draft</button>
             {% endif %}
+        </form>
+        <form action="{{ url_for('main.temp_preview_link', post_id=post.id) }}" method="POST">
+            <button type="submit" class="btn btn-primary">Temp Preview</button>
         </form>
     </div>
     {% endif %}

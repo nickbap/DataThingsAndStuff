@@ -2,8 +2,10 @@ import io
 import os
 import unittest
 from datetime import datetime
+from unittest import mock
 from urllib.parse import quote
 
+from itsdangerous import SignatureExpired
 from PIL import Image
 from PIL import ImageDraw
 
@@ -11,6 +13,7 @@ from dtns import create_app
 from dtns import db
 from dtns.constants import PostStatus
 from dtns.models import Post
+from dtns.utils import post_utils
 
 
 class BaseRouteTestCase(unittest.TestCase):
@@ -252,6 +255,47 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 404)
         self.assertIn("Sorry, we can't find what you're looking for...", response_text)
 
+    def test_temp_preview_link_as_user(self):
+        response = self.client.post("/temp-preview/1")
+        self.assertEqual(response.status_code, 401)
+
+    def test_temp_preview_as_user_no_token(self):
+        response = self.client.get("/temp-preview")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_temp_preview_as_user_with_token(self):
+        post = Post.query.first()
+        token = post_utils.generate_temp_preview_token(post.slug)
+        url = f"/temp-preview?preview_id={token}"
+
+        response = self.client.get(url)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(post.title, response_text)
+
+    def test_temp_preview_as_user_post_not_found(self):
+        token = post_utils.generate_temp_preview_token("wont-find")
+        url = f"/temp-preview?preview_id={token}"
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
+
+    @mock.patch("dtns.utils.post_utils.validate_temp_preview_token")
+    def test_temp_preview_as_user_link_expired(self, mock_validate_temp_preview_token):
+        mock_validate_temp_preview_token.side_effect = SignatureExpired("")
+        post = Post.query.first()
+        token = post_utils.generate_temp_preview_token(post.slug)
+        url = f"/temp-preview?preview_id={token}"
+
+        response = self.client.get(url)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("your preview link has expired", response_text)
+
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):
@@ -437,6 +481,14 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         response = self.client.get("/image-manager/sort?asc=0")
 
         self.assertEqual(response.status_code, 200)
+
+    def test_temp_preview_link_as_admin(self):
+        response = self.client.post("/temp-preview/1", follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Temporary preview link", response_text)
+        self.assertIn("warning", response_text)
 
 
 def create_test_image():

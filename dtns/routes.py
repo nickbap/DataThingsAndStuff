@@ -14,6 +14,7 @@ from flask_login import current_user
 from flask_login import login_user
 from flask_login import logout_user
 from flask_login.utils import login_required
+from itsdangerous import SignatureExpired
 from werkzeug.security import check_password_hash
 
 from dtns import db
@@ -162,6 +163,37 @@ def draft(post_id):
 
     flash("Your post has been marked as a draft!", "success")
     return redirect(url_for("main.admin"))
+
+
+@main.route("/temp-preview/<int:post_id>", methods=["POST"])
+@login_required
+def temp_preview_link(post_id):
+    post = PostModelStorage.get(post_id)
+
+    url = post_utils.generate_temp_preview_url(post)
+
+    flash(f"Temporary preview link: \n{url}", "warning")
+    return redirect(url_for("main.preview", slug=post.slug))
+
+
+@main.route("/temp-preview", methods=["GET"])
+def temp_preview():
+    preview_id = request.args.get("preview_id")
+    if not preview_id:
+        abort(401)
+
+    try:
+        slug = post_utils.validate_temp_preview_token(preview_id)
+    except SignatureExpired:
+        return render_template("errors/expired-link.html")
+
+    recent_post_list = PostModelStorage.get_recent_posts()
+    post = PostModelStorage.get_post_by_slug(slug)
+
+    if not post:
+        abort(404)
+
+    return render_template("post.html", recent_post_list=recent_post_list, post=post)
 
 
 @main.route("/preview/<slug>")
