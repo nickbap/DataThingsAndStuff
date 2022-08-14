@@ -92,7 +92,7 @@ def resize_images(image_dir, resize_name, dry_run):
     resize_count = _resize_rename_images(lookup, dry_run)
 
     click.echo(
-        f"{resize_count} images{'would be ' if dry_run else ' '}resized and renamed!"
+        f"{resize_count} images{' would be ' if dry_run else ' '}resized and renamed!"
     )
 
 
