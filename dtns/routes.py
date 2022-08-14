@@ -46,7 +46,8 @@ def index():
 
 @main.route("/about")
 def about():
-    return render_template("about.html")
+    post = PostModelStorage.get_post_by_slug("about")
+    return render_template("about.html", post=post)
 
 
 @main.route("/admin", methods=["GET", "POST"])
