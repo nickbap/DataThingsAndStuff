@@ -16,7 +16,8 @@ def render_blank_link(self, tokens, idx, options, env):
 
 def render_youtube_pin_or_board(self, tokens, idx, options, env):
     """
-    Render image syntax with youtube urls as embedded youtube player
+    Render image syntax with youtube urls as embedded youtube player or
+    embedded Pinterest pin or board widget
 
     Note: The post editor currently shows a broken image when this is used.
     ex. ![30 for 30 Youtube Skate Part](https://www.youtube.com/watch?v=Lgwlta7ccnI)
