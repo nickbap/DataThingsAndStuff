@@ -10,7 +10,6 @@ from flask_login.utils import login_required
 
 from dtns.model_storage import PostModelStorage
 from dtns.utils import image_utils
-from dtns.utils import post_utils
 
 ajax = Blueprint("ajax", __name__)
 
@@ -44,8 +43,8 @@ def save_post(post_id):
 
     PostModelStorage.edit_post(post_id, data)
 
-    return render_template_string(
-        post_utils.alert_template,
+    return render_template(
+        "components/alert.html",
         category="success",
         message=f"Saved at { datetime.utcnow().strftime('%H:%M:%S') }!",
     )

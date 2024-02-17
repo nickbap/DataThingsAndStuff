@@ -1,0 +1,7 @@
+<div class="py-2">
+    <div id="alerts" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button id="alert-button" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+            hx-trigger="click, keyup[Escape] from:body"></button>
+    </div>
+</div>

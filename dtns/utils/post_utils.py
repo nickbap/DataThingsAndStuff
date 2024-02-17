@@ -6,16 +6,6 @@ from itsdangerous.url_safe import URLSafeTimedSerializer
 
 MAX_AGE = 30 * 60
 
-alert_template = """
-    <div class="py-2">
-        <div id="alerts" class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button id="alert-button" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
-            hx-trigger="click, keyup[Escape] from:body"></button>
-        </div>
-    </div>
-    """
-
 
 def aggregate_and_sort_posts_by_month_year(posts):
     archive_posts = list({post.published_at.strftime("%B %Y") for post in posts})
