@@ -53,8 +53,8 @@ class AuthTestCase(unittest.TestCase):
         self.assertIn('id="admin-nav"', response_text)
         self.assertIn("Welcome to Data Things and Stuff!", response_text)
         self.assertIn("success", response_text)
-        self.assertIn("New Post", response_text)
-        self.assertIn('id="post-table"', response_text)
+        self.assertIn("Admin", response_text)
+        self.assertIn('id="admin-options"', response_text)
 
     def test_unsuccessful_admin_login(self):
         data = {"email": self.email, "password": "aWrongPassWord"}

@@ -1,0 +1,67 @@
+{% extends '_base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css" />
+{% endblock %}
+
+{% block content %}
+<main class="container py-3">
+    {% include 'components/alerts.html' %}
+    <h1>Posts</h1>
+    <div id="admin">
+        <div class="btn-group py-3" role="group">
+            <button type="button" class="btn btn-secondary">
+                <a class="text-reset text-decoration-none" href="{{ url_for('main.create') }}">New Post</a>
+            </button>
+        </div>
+        <div id="post-table">
+            {% if posts %}
+            <div class="table-responsive py-3">
+                <table id="data" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Published At</th>
+                            <th scope="col">Updated At</th>
+                            <th scope="col">State</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('main.preview', slug=post.slug) }}">{{ post.title }}</a>
+                            </td>
+                            <td>{{ post.created_at }}</td>
+                            <td>{{ post.published_at if post.published_at else '' }}</td>
+                            <td>{{ post.updated_at }}</td>
+                            <td>
+                                <span class="{{ POST_STATUS_STYLE[post.state] }}">
+                                    {{ post.state.title() }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.11.3/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#data').DataTable({
+            "pageLength": 25,
+            "order": [
+                [3, "desc"]
+            ]
+        });
+    });
+</script>
+{% endblock %}

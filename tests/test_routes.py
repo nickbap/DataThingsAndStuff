@@ -99,6 +99,13 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertNotIn('id="admin-nav"', response_text)
         self.assertIn("Login", response_text)
 
+    def test_admin_posts_route_as_user(self):
+        response = self.client.get("/admin/posts")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
+
     def test_create_route_as_user(self):
         response = self.client.get("/create")
         response_text = response.get_data(as_text=True)
@@ -310,6 +317,15 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
 
         db.session.add(post)
         db.session.commit()
+
+    def test_admin_posts_route_as_admin(self):
+        response = self.client.get("/admin/posts")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Posts", response_text)
+        self.assertIn("New Post", response_text)
+        self.assertIn('id="post-table"', response_text)
 
     def test_create_route_as_admin(self):
         response = self.client.get("/create")

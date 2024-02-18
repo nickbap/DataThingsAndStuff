@@ -76,6 +76,15 @@ def admin():
     )
 
 
+@main.route("/admin/posts", methods=["GET"])
+@login_required
+def admin_posts():
+    posts = PostModelStorage.get_all_posts_ordered_by_updated_at()
+    return render_template(
+        "admin/posts.html", posts=posts, POST_STATUS_STYLE=POST_STATUS_STYLE
+    )
+
+
 @main.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
