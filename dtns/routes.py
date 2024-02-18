@@ -85,6 +85,13 @@ def admin_posts():
     )
 
 
+@main.route("/admin/users", methods=["GET"])
+@login_required
+def admin_users():
+    users = UserModelStorage.get_all_for_admin()
+    return render_template("admin/users.html", users=users)
+
+
 @main.route("/create", methods=["GET", "POST"])
 @login_required
 def create():

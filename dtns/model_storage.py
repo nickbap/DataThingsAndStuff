@@ -157,3 +157,20 @@ class UserModelStorage(BaseModelStorage):
             return
 
         return user[0]
+
+    @classmethod
+    def get_all_for_admin(cls):
+        users = cls.get_all()
+        if not users:
+            []
+
+        return [
+            {
+                "id": user.id,
+                "created_at": user.created_at,
+                "email": user.email,
+                "username": user.username,
+                "is_admin": user.is_admin,
+            }
+            for user in users
+        ]

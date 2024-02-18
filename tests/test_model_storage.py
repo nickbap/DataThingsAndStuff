@@ -341,3 +341,15 @@ class UserModelStorageTestCase(unittest.TestCase):
         user = UserModelStorage.get_user_by_email("wont-find-me@test.com")
 
         self.assertIsNone(user)
+
+    def test_get_all_for_admin(self):
+        users = UserModelStorage.get_all_for_admin()
+
+        self.assertEqual(len(users), NUM_USERS)
+        for user in users:
+            self.assertIn("id", user)
+            self.assertIn("created_at", user)
+            self.assertIn("email", user)
+            self.assertIn("username", user)
+            self.assertIn("is_admin", user)
+            self.assertNotIn("password", user)

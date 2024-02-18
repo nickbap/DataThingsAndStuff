@@ -1,0 +1,56 @@
+{% extends '_base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css" />
+{% endblock %}
+
+{% block content %}
+<main class="container py-3">
+    {% include 'components/alerts.html' %}
+    <h1>Users</h1>
+    <div id="admin">
+        <div id="user-table">
+            {% if users %}
+            <div class="table-responsive py-3">
+                <table id="data" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Is Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{user.get('id')}}</td>
+                            <td>{{user.get('created_at')}}</td>
+                            <td>{{user.get('username')}}</td>
+                            <td>{{user.get('email')}}</td>
+                            <td>{{user.get('is_admin')}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.11.3/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#data').DataTable({
+            "pageLength": 25,
+            "order": [
+                [0, "asc"]
+            ]
+        });
+    });
+</script>
+{% endblock %}

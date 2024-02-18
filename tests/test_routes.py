@@ -106,6 +106,13 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 401)
         self.assertIn("No no, you're not allowed to do that...", response_text)
 
+    def test_admin_users_route_as_user(self):
+        response = self.client.get("/admin/users")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
+
     def test_create_route_as_user(self):
         response = self.client.get("/create")
         response_text = response.get_data(as_text=True)
@@ -326,6 +333,14 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertIn("Posts", response_text)
         self.assertIn("New Post", response_text)
         self.assertIn('id="post-table"', response_text)
+
+    def test_admin_users_route_as_admin(self):
+        response = self.client.get("/admin/users")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Users", response_text)
+        self.assertIn('id="user-table"', response_text)
 
     def test_create_route_as_admin(self):
         response = self.client.get("/create")
