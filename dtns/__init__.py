@@ -57,6 +57,7 @@ def create_app(testing_config=None):
                 "Post": models.Post,
                 "PostModelStorage": model_storage.PostModelStorage,
                 "User": models.User,
+                "UserModelStorage": model_storage.UserModelStorage,
             }
 
     return app
