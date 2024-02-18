@@ -54,6 +54,7 @@ def create_app(testing_config=None):
         def make_shell_context():
             return {
                 "db": db,
+                "Comment": models.Comment,
                 "Post": models.Post,
                 "PostModelStorage": model_storage.PostModelStorage,
                 "User": models.User,

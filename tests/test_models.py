@@ -5,7 +5,9 @@ from werkzeug.security import generate_password_hash
 
 from dtns import create_app
 from dtns import db
+from dtns.constants import CommentState
 from dtns.constants import PostStatus
+from dtns.models import Comment
 from dtns.models import Post
 from dtns.models import User
 
@@ -149,3 +151,62 @@ class UserModelTestCase(unittest.TestCase):
 
         self.assertIsNotNone(u.created_at)
         self.assertIsInstance(u.created_at, datetime)
+
+
+class CommentModelTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app("testing")
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
+        db.create_all()
+
+        self.title = "A Test Title"
+        self.slug = "a-test-tile"
+        self.description = "A test post description"
+        self.source = "# Hey"
+        self.html = "<h1>Hey</h1>\n"
+        self.post = Post(
+            title=self.title,
+            slug=self.slug,
+            description=self.description,
+            source=self.source,
+        )
+
+        self.username = "test_user"
+        self.email = "test@test.com"
+        self.password = "test_password"
+        self.password_hash = generate_password_hash(self.password)
+        self.user = User(
+            email=self.email, username=self.username, password=self.password_hash
+        )
+        db.session.add_all([self.post, self.user])
+        db.session.commit()
+
+    def tearDown(self):
+        db.session.commit()
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_create_comment(self):
+        c = Comment(text="My first test comment", user=self.user, post=self.post)
+        db.session.add(c)
+        db.session.commit()
+
+        comment = Comment.query.first()
+
+        self.assertIsNotNone(comment)
+        self.assertIsInstance(comment.created_at, datetime)
+        self.assertEqual("My first test comment", comment.text)
+        self.assertEqual(CommentState.VISIBLE, comment.state)
+        self.assertEqual(self.post, comment.post)
+        self.assertEqual(self.user, comment.user)
+
+    def test_create_comment_is_visible_by_default(self):
+        c = Comment(text="My first test comment", user=self.user, post=self.post)
+        db.session.add(c)
+        db.session.commit()
+
+        comment = Comment.query.first()
+
+        self.assertEqual(CommentState.VISIBLE, comment.state)
