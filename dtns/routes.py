@@ -72,7 +72,7 @@ def admin():
         else:
             flash("Something went wrong with your login! Please try again.", "danger")
     return render_template(
-        "admin.html", form=form, posts=posts, POST_STATUS_STYLE=POST_STATUS_STYLE
+        "admin/home.html", form=form, posts=posts, POST_STATUS_STYLE=POST_STATUS_STYLE
     )
 
 
