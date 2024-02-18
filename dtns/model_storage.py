@@ -162,7 +162,7 @@ class UserModelStorage(BaseModelStorage):
     def get_all_for_admin(cls):
         users = cls.get_all()
         if not users:
-            []
+            return []
 
         return [
             {
