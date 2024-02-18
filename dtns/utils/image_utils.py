@@ -4,26 +4,6 @@ from werkzeug.utils import secure_filename
 
 from dtns.constants import ALLOWABLE_IMAGE_TYPES
 
-image_list_template = """
-    <div id="images" class="container d-flex flex-wrap">
-        {% for image in image_list %}
-        <div class="p-2">
-            <div class="d-flex flex-column align-items-center">
-                <figure class="figure">
-                    <img class="img-thumbnail" style="max-width: 300px; height:auto"
-                        src="static/uploads/{{ image }}">
-                    <figcaption class="figure-caption">
-                        {{ url_for('main.download_file', name=image, _external=True) }}</figcaption>
-                </figure>
-                <a class="text-reset" href hx-get="{{ url_for('ajax.delete_image_manager_image', image=image) }}">
-                    <i class="bi bi-x-square"></i>
-                </a>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    """
-
 
 class ImageManager:
     def __init__(self, app):

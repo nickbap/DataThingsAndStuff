@@ -3,7 +3,6 @@ from urllib.parse import unquote
 
 from flask import Blueprint
 from flask import current_app
-from flask import render_template_string
 from flask import render_template
 from flask import request
 from flask_login.utils import login_required
@@ -56,9 +55,7 @@ def sort_image_manager_images():
     option = bool(int(request.args["asc"]))
     image_manager = image_utils.ImageManager(current_app)
     image_list = image_manager.get_all_images_sorted(asc=option)
-    return render_template_string(
-        image_utils.image_list_template, image_list=image_list
-    )
+    return render_template("components/image-list.html", image_list=image_list)
 
 
 @ajax.route("/image-manager/delete")
@@ -68,6 +65,4 @@ def delete_image_manager_image():
     image_manager = image_utils.ImageManager(current_app)
     image_manager.delete_image(image)
     image_list = image_manager.get_all_images()
-    return render_template_string(
-        image_utils.image_list_template, image_list=image_list
-    )
+    return render_template("components/image-list.html", image_list=image_list)
