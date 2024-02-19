@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
+from flask_wtf.recaptcha import RecaptchaField
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -13,6 +14,14 @@ class BlogPostForm(FlaskForm):
     slug = StringField("Slug", validators=[DataRequired()])
     description = StringField("Post Description", validators=[DataRequired()])
     source = TextAreaField("Post", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
+
+class CommentForm(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    username = StringField("Username", validators=[DataRequired()])
+    comment = TextAreaField("Comment", validators=[DataRequired()])
+    recaptcha = RecaptchaField()
     submit = SubmitField("Submit")
 
 

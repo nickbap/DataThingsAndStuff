@@ -21,6 +21,7 @@ from dtns import db
 from dtns.constants import POST_STATUS_STYLE
 from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
+from dtns.forms import CommentForm
 from dtns.forms import ImageUploadForm
 from dtns.forms import LoginForm
 from dtns.model_storage import PostModelStorage
@@ -223,13 +224,17 @@ def preview(slug):
     return render_template("post.html", recent_post_list=recent_post_list, post=post)
 
 
-@main.route("/post/<slug>")
+@main.route("/post/<slug>", methods=["GET", "POST"])
 def post(slug):
     recent_post_list = PostModelStorage.get_recent_posts()
     post = PostModelStorage.get_post_by_slug(slug)
     if not post:
         abort(404)
-    return render_template("post.html", recent_post_list=recent_post_list, post=post)
+
+    form = CommentForm()
+    if form.validate_on_submit():
+        print('\nWork in Progress!\n')
+    return render_template("post.html", recent_post_list=recent_post_list, post=post, slug=slug, form=form)
 
 
 @main.route("/uploads/<name>")

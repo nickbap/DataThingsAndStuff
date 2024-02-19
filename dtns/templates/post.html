@@ -57,6 +57,74 @@
         </form>
     </div>
     {% endif %}
+
+    {% if form %}
+    <hr>
+    <div class="container-fluid d-flex">
+        <div class="row justify-content-center text-center w-100">
+            <div class="col-md-6 col-sm-6">
+                <h2>Comment</h2>
+                <form method="POST" action="{{ url_for('main.post', slug=slug) }}">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <!-- Email -->
+                        <div class="form-group mb-1">
+                            {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-md is-invalid") }}
+                            <div class="invalid-feedback font-weight-bold">
+                                {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.email(class="form-control form-control-md", placeholder="Email") }}
+                            {% endif %}
+                        </div>
+                        <!-- Username -->
+                        <div class="form-group mb-1">
+                            {% if form.username.errors %}
+                            {{ form.username(class="form-control form-control-md is-invalid") }}
+                            <div class="invalid-feedback font-weight-bold">
+                                {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.username(class="form-control form-control-md", placeholder="Username") }}
+                            {% endif %}
+                        </div>
+                        <!-- Comment -->
+                        <div class="form-group mb-1">
+                            {% if form.comment.errors %}
+                            {{ form.comment(class="form-control form-control-md is-invalid") }}
+                            <div class="invalid-feedback font-weight-bold">
+                                {% for error in form.comment.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.comment(class="form-control form-control-md", placeholder="Comment") }}
+                            {% endif %}
+                        </div>
+                        <!-- <div class="form-group mb-1">
+                            {{ form.username(class="form-control form-control-md", placeholder="Username") }}
+                        </div> -->
+                        <div class="mt-1">
+                            {% for error in form.recaptcha.errors %}
+                            {{ error }}
+                            {% endfor %}
+                            {{ form.recaptcha }}
+                        </div>
+                        <div class="pt-1 w-100">
+                            {{ form.submit(class="btn btn-light") }}
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
 </main>
 {% endblock %}
 
