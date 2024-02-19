@@ -8,12 +8,6 @@ from wtforms.validators import DataRequired
 from wtforms.validators import Email
 
 
-class LoginForm(FlaskForm):
-    email = StringField("email", validators=[DataRequired(), Email()])
-    password = PasswordField("password", validators=[DataRequired()])
-    login = SubmitField("Login")
-
-
 class BlogPostForm(FlaskForm):
     title = StringField("Post Title", validators=[DataRequired()])
     slug = StringField("Slug", validators=[DataRequired()])
@@ -25,3 +19,9 @@ class BlogPostForm(FlaskForm):
 class ImageUploadForm(FlaskForm):
     file = FileField("Upload an Image")
     submit = SubmitField("Submit")
+
+
+class LoginForm(FlaskForm):
+    email = StringField("email", validators=[DataRequired(), Email()])
+    password = PasswordField("password", validators=[DataRequired()])
+    login = SubmitField("Login")
