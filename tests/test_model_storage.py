@@ -6,8 +6,10 @@ from freezegun import freeze_time
 from dtns import create_app
 from dtns import db
 from dtns.constants import PostStatus
+from dtns.model_storage import CommentModelStorage
 from dtns.model_storage import PostModelStorage
 from dtns.model_storage import UserModelStorage
+from dtns.models import Comment
 from dtns.models import Post
 from dtns.models import User
 
@@ -353,3 +355,69 @@ class UserModelStorageTestCase(unittest.TestCase):
             self.assertIn("username", user)
             self.assertIn("is_admin", user)
             self.assertNotIn("password", user)
+
+    def test_get_or_create_comment_user_get_user(self):
+        email = "test_1@test.com"
+        user = UserModelStorage.get_user_by_email(email)
+        self.assertIsNotNone(user)
+
+    def test_get_or_create_comment_user_create_user(self):
+        email = "idonotexist@fake.com"
+        username = "iamnotreal"
+        user = UserModelStorage.get_user_by_email(email)
+        self.assertIsNone(user)
+
+        UserModelStorage.get_or_create_comment_user(email, username)
+
+        user = UserModelStorage.get_user_by_email(email)
+        self.assertIsNotNone(user)
+        self.assertEqual(email, user.email)
+        self.assertEqual(username, user.username)
+        self.assertEqual("i-only-comment", user.password)
+        self.assertFalse(user.is_admin)
+
+
+class CommentModelStorageTestCase(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app("testing")
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+        self.email = "test_1@test.com"
+        self.username = "test_user_1"
+        self.user = User(
+            email=self.email, username=self.username, password="test_password_1"
+        )
+
+        self.post = Post(
+            title="Title 1",
+            slug="slug-1",
+            description="Post description 1",
+            source="# Post 1",
+        )
+
+        db.session.add_all([self.user, self.post])
+        db.session.commit()
+
+    def tearDown(self):
+        db.session.commit()
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_create_comment(self):
+        comment_text = "Just leaving a comment!"
+        data = {
+            "email": self.email,
+            "username": self.username,
+            "comment": comment_text,
+            "post": self.post,
+        }
+
+        CommentModelStorage.create_comment(data)
+        comment = Comment.query.order_by(-Comment.id).first()
+
+        self.assertIsNotNone(Comment)
+        self.assertEqual(comment.text, comment_text)
+        self.assertEqual(comment.user_id, self.user.id)
+        self.assertEqual(comment.post_id, self.post.id)

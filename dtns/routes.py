@@ -24,6 +24,7 @@ from dtns.forms import BlogPostForm
 from dtns.forms import CommentForm
 from dtns.forms import ImageUploadForm
 from dtns.forms import LoginForm
+from dtns.model_storage import CommentModelStorage
 from dtns.model_storage import PostModelStorage
 from dtns.model_storage import UserModelStorage
 from dtns.utils import image_utils
@@ -233,8 +234,22 @@ def post(slug):
 
     form = CommentForm()
     if form.validate_on_submit():
-        print('\nWork in Progress!\n')
-    return render_template("post.html", recent_post_list=recent_post_list, post=post, slug=slug, form=form)
+        try:
+            data = {
+                "email": form.email.data,
+                "username": form.username.data,
+                "comment": form.comment.data,
+                "post": post,
+            }
+            CommentModelStorage.create_comment(data)
+            flash("Your comment has been added!", "success")
+            return redirect(url_for("main.post", slug=post.slug))
+        except Exception:
+            flash("Sorry, something went wrong with adding your comment!", "danger")
+            return redirect(url_for("main.post", slug=post.slug))
+    return render_template(
+        "post.html", recent_post_list=recent_post_list, post=post, slug=slug, form=form
+    )
 
 
 @main.route("/uploads/<name>")

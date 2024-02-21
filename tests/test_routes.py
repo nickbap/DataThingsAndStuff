@@ -310,6 +310,42 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("your preview link has expired", response_text)
 
+    def test_create_comment_on_post_as_user(self):
+        comment_data = {
+            "email": "foo@bar.com",
+            "username": "foobar",
+            "comment": "This is a comment!",
+        }
+
+        response = self.client.post(
+            "/post/slug-1", data=comment_data, follow_redirects=True
+        )
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Your comment has been added!", response_text)
+        self.assertIn("success", response_text)
+
+    @mock.patch("dtns.model_storage.CommentModelStorage.create_comment")
+    def test_create_comment_on_post_as_user_handle_exception(self, mock_create_comment):
+        mock_create_comment.side_effect = Exception()
+        comment_data = {
+            "email": "foo@bar.com",
+            "username": "foobar",
+            "comment": "This is a comment!",
+        }
+
+        response = self.client.post(
+            "/post/slug-1", data=comment_data, follow_redirects=True
+        )
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "Sorry, something went wrong with adding your comment!", response_text
+        )
+        self.assertIn("danger", response_text)
+
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):

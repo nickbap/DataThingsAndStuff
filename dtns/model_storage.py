@@ -5,6 +5,7 @@ from sqlalchemy import func
 
 from dtns import db
 from dtns.constants import PostStatus
+from dtns.models import Comment
 from dtns.models import Post
 from dtns.models import User
 
@@ -174,3 +175,25 @@ class UserModelStorage(BaseModelStorage):
             }
             for user in users
         ]
+
+    @classmethod
+    def get_or_create_comment_user(cls, email, username):
+        user = cls.get_user_by_email(email)
+        if not user:
+            user = User(email=email, username=username, password="i-only-comment")
+            db.session.add(user)
+            db.session.commit()
+        return user
+
+
+class CommentModelStorage(BaseModelStorage):
+    model = Comment
+
+    @classmethod
+    def create_comment(cls, data):
+        user = UserModelStorage.get_or_create_comment_user(
+            data.get("email"), data.get("username")
+        )
+        comment = Comment(text=data.get("comment"), user=user, post=data.get("post"))
+        db.session.add(comment)
+        db.session.commit()
