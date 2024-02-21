@@ -1,13 +1,18 @@
+class CommentState:
+    HIDDEN = "hidden"
+    VISIBLE = "visible"
+
+
 class PostStatus:
     ARCHIVED = "archived"
     DRAFT = "draft"
     PUBLISHED = "published"
 
 
-class CommentState:
-    HIDDEN = "hidden"
-    VISIBLE = "visible"
-
+COMMENT_STATUS_STYLE = {
+    CommentState.HIDDEN: "badge bg-danger",
+    CommentState.VISIBLE: "badge bg-success",
+}
 
 POST_STATUS_STYLE = {
     PostStatus.ARCHIVED: "badge bg-dark",

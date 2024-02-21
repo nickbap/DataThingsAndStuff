@@ -18,6 +18,7 @@ from itsdangerous import SignatureExpired
 from werkzeug.security import check_password_hash
 
 from dtns import db
+from dtns.constants import COMMENT_STATUS_STYLE
 from dtns.constants import POST_STATUS_STYLE
 from dtns.constants import PostStatus
 from dtns.forms import BlogPostForm
@@ -92,6 +93,17 @@ def admin_posts():
 def admin_users():
     users = UserModelStorage.get_all_for_admin()
     return render_template("admin/users.html", users=users)
+
+
+@main.route("/admin/comments", methods=["GET"])
+@login_required
+def admin_comments():
+    comments = CommentModelStorage.get_all()
+    return render_template(
+        "admin/comments.html",
+        comments=comments,
+        COMMENT_STATUS_STYLE=COMMENT_STATUS_STYLE,
+    )
 
 
 @main.route("/create", methods=["GET", "POST"])

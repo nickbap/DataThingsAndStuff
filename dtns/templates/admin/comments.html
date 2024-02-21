@@ -1,0 +1,61 @@
+{% extends '_base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css" />
+{% endblock %}
+
+{% block content %}
+<main class="container py-3">
+    {% include 'components/alerts.html' %}
+    <h1>Comments</h1>
+    <div id="admin">
+        <div id="comments-table">
+            {% if comments %}
+            <div class="table-responsive py-3">
+                <table id="data" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Post</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">State</th>
+                            <th scope="col">Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in comments %}
+                        <tr>
+                            <td>{{comment.id}}</td>
+                            <td>{{comment.created_at}}</td>
+                            <td>{{comment.post.title}}</td>
+                            <td>{{comment.user.username}}</td>
+                            <td><span class="{{ COMMENT_STATUS_STYLE[comment.state] }}">
+                                    {{ comment.state.title() }}
+                                </span>
+                            </td>
+                            <td>{{comment.text}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jq-3.6.0/dt-1.11.3/datatables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#data').DataTable({
+            "pageLength": 25,
+            "order": [
+                [0, "asc"]
+            ]
+        });
+    });
+</script>
+{% endblock %}
