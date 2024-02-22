@@ -106,6 +106,14 @@ def admin_comments():
     )
 
 
+@main.route("/admin/comment/toggle/<int:comment_id>", methods=["POST"])
+@login_required
+def admin_comment_toggle_visibility_state(comment_id):
+    CommentModelStorage.toggle_visibility_state(comment_id)
+    flash("Comment visibility state updated!", "success")
+    return redirect(url_for("main.admin_comments"))
+
+
 @main.route("/create", methods=["GET", "POST"])
 @login_required
 def create():

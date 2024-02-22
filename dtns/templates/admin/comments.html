@@ -28,11 +28,19 @@
                         <tr>
                             <td>{{comment.id}}</td>
                             <td>{{comment.created_at}}</td>
-                            <td>{{comment.post.title}}</td>
+                            <td><a href="{{ url_for('main.post', slug=comment.post.slug) }}">{{comment.post.title}}</a>
+                            </td>
                             <td>{{comment.user.username}}</td>
-                            <td><span class="{{ COMMENT_STATUS_STYLE[comment.state] }}">
-                                    {{ comment.state.title() }}
-                                </span>
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <span class="{{ COMMENT_STATUS_STYLE[comment.state] }} m-1">
+                                        {{ comment.state.title() }}
+                                    </span>
+                                    <form method="POST"
+                                        action="{{ url_for('main.admin_comment_toggle_visibility_state', comment_id=comment.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-link">Toggle</button>
+                                    </form>
+                                </div>
                             </td>
                             <td>{{comment.text}}</td>
                         </tr>

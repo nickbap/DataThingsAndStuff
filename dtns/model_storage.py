@@ -4,6 +4,7 @@ from sqlalchemy import desc
 from sqlalchemy import func
 
 from dtns import db
+from dtns.constants import CommentState
 from dtns.constants import PostStatus
 from dtns.models import Comment
 from dtns.models import Post
@@ -26,6 +27,15 @@ class BaseModelStorage:
     @classmethod
     def filter_(cls, **kwargs):
         return cls.model.query.filter_by(**kwargs).all()
+
+    @classmethod
+    def get_by_id(cls, id):
+        obj = cls.filter_(id=id)
+        if not obj:
+            return
+
+        if len(obj) == 1:
+            return obj[0]
 
 
 class PostModelStorage(BaseModelStorage):
@@ -195,5 +205,23 @@ class CommentModelStorage(BaseModelStorage):
             data.get("email"), data.get("username")
         )
         comment = Comment(text=data.get("comment"), user=user, post=data.get("post"))
+        db.session.add(comment)
+        db.session.commit()
+
+    @classmethod
+    def toggle_visibility_state(cls, comment_id):
+        comment = cls.get_by_id(comment_id)
+        if not comment:
+            return
+
+        if comment.state == CommentState.VISIBLE:
+            new_state = CommentState.HIDDEN
+        elif comment.state == CommentState.HIDDEN:
+            new_state = CommentState.VISIBLE
+        else:
+            raise ValueError("Comment in unknown visibility state")
+
+        comment.state = new_state
+
         db.session.add(comment)
         db.session.commit()

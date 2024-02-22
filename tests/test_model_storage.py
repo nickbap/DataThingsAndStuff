@@ -5,6 +5,7 @@ from freezegun import freeze_time
 
 from dtns import create_app
 from dtns import db
+from dtns.constants import CommentState
 from dtns.constants import PostStatus
 from dtns.model_storage import CommentModelStorage
 from dtns.model_storage import PostModelStorage
@@ -397,6 +398,12 @@ class CommentModelStorageTestCase(unittest.TestCase):
             source="# Post 1",
         )
 
+        self.comment = Comment(
+            text="A test comment",
+            user=self.user,
+            post=self.post,
+        )
+
         db.session.add_all([self.user, self.post])
         db.session.commit()
 
@@ -421,3 +428,32 @@ class CommentModelStorageTestCase(unittest.TestCase):
         self.assertEqual(comment.text, comment_text)
         self.assertEqual(comment.user_id, self.user.id)
         self.assertEqual(comment.post_id, self.post.id)
+
+    def test_toggle_visibility_state(self):
+        comment = Comment.query.order_by(-Comment.id).first()
+        self.assertEqual(comment.state, CommentState.VISIBLE)
+
+        CommentModelStorage.toggle_visibility_state(comment.id)
+
+        comment = Comment.query.order_by(-Comment.id).first()
+        self.assertEqual(comment.state, CommentState.HIDDEN)
+
+        CommentModelStorage.toggle_visibility_state(comment.id)
+
+        comment = Comment.query.order_by(-Comment.id).first()
+        self.assertEqual(comment.state, CommentState.VISIBLE)
+
+    def test_toggle_visibility_state_no_comment(self):
+        comment_id = 100
+
+        result = CommentModelStorage.toggle_visibility_state(comment_id)
+
+        self.assertIsNone(result)
+
+    def test_toggle_visibility_state_raises_exception_bad_state(self):
+        self.comment.state = "BREAK"
+        db.session.add(self.comment)
+        db.session.commit()
+
+        with self.assertRaises(ValueError):
+            CommentModelStorage.toggle_visibility_state(self.comment.id)

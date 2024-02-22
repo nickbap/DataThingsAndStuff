@@ -12,7 +12,9 @@ from PIL import ImageDraw
 from dtns import create_app
 from dtns import db
 from dtns.constants import PostStatus
+from dtns.models import Comment
 from dtns.models import Post
+from dtns.models import User
 from dtns.utils import post_utils
 
 
@@ -115,6 +117,13 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
     def test_admin_comments_route_as_user(self):
         response = self.client.get("/admin/comments")
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
+
+    def test_admin_comment_toggle_visibility_route_as_user(self):
+        response = self.client.post("/admin/comment/toggle/1")
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 401)
@@ -392,6 +401,25 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Comments", response_text)
         self.assertIn('id="comments-table"', response_text)
+
+    def test_admin_comment_toggle_visibility_route_as_admin(self):
+        user = User(
+            email="test_1@test.com", username="test_user_1", password="test_password_1"
+        )
+        comment = Comment(
+            text="A test comment",
+            user=user,
+            post=self.posts[0],
+        )
+        db.session.add_all([user, comment])
+        db.session.commit()
+
+        response = self.client.post("/admin/comment/toggle/1", follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Comment visibility state updated!", response_text)
+        self.assertIn("success", response_text)
 
     def test_create_route_as_admin(self):
         response = self.client.get("/create")
