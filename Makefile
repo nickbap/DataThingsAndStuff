@@ -20,7 +20,10 @@ lint:
 	flake8 dtns
 	flake8 tests
 
-pr: lint all-tests
+format:
+	black .
+
+pr: format lint all-tests
 
 shell:
 	FLASK_ENV=development flask shell
