@@ -63,7 +63,29 @@ def admin():
     form = LoginForm()
     if form.validate_on_submit():
         user = UserModelStorage.get_user_by_email(form.email.data)
-        if user and check_password_hash(user.password, form.password.data):
+        if not user:
+            flash("Something went wrong with your login! Please try again.", "danger")
+            return render_template(
+                "admin/home.html",
+                form=form,
+                posts=posts,
+                POST_STATUS_STYLE=POST_STATUS_STYLE,
+            )
+
+        if user and not user.is_admin:
+            flash("Commenters are not allowed to log in!", "danger")
+            return render_template(
+                "admin/home.html",
+                form=form,
+                posts=posts,
+                POST_STATUS_STYLE=POST_STATUS_STYLE,
+            )
+
+        if (
+            user
+            and user.is_admin
+            and check_password_hash(user.password, form.password.data)
+        ):
             login_user(user)
             next_page = request.args.get("next")
             flash("Welcome to Data Things and Stuff!", "success")

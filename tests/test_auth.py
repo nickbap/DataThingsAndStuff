@@ -15,16 +15,20 @@ class AuthTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         db.create_all()
 
-        self.email = "test@test.com"
-        self.username = "test_user"
-        self.password = "test_password"
-        self.password_hash = generate_password_hash(self.password)
+        self.admin_user_email = "test@test.com"
+        self.admin_user_username = "test_user"
+        self.admin_user_password = "test_password"
+        self.admin_user_password_hash = generate_password_hash(self.admin_user_password)
+        self.is_admin = True
 
-        self.user = User(
-            email=self.email, username=self.username, password=self.password_hash
+        self.admin_user = User(
+            email=self.admin_user_email,
+            username=self.admin_user_username,
+            password=self.admin_user_password_hash,
+            is_admin=self.is_admin,
         )
 
-        db.session.add(self.user)
+        db.session.add(self.admin_user)
         db.session.commit()
 
     def tearDown(self):
@@ -39,12 +43,12 @@ class AuthTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('id="admin-nav"', response_text)
         self.assertIn("Login", response_text)
-        self.assertNotIn(self.username, response_text)
+        self.assertNotIn(self.admin_user_username, response_text)
         self.assertNotIn("New Post", response_text)
         self.assertNotIn('id="post-list"', response_text)
 
     def test_successful_admin_login(self):
-        data = {"email": self.email, "password": self.password}
+        data = {"email": self.admin_user_email, "password": self.admin_user_password}
 
         response = self.client.post("/admin", data=data, follow_redirects=True)
         response_text = response.get_data(as_text=True)
@@ -57,7 +61,7 @@ class AuthTestCase(unittest.TestCase):
         self.assertIn('id="admin-options"', response_text)
 
     def test_unsuccessful_admin_login(self):
-        data = {"email": self.email, "password": "aWrongPassWord"}
+        data = {"email": self.admin_user_email, "password": "aWrongPassWord"}
 
         response = self.client.post("/admin", data=data, follow_redirects=True)
         response_text = response.get_data(as_text=True)
@@ -72,7 +76,7 @@ class AuthTestCase(unittest.TestCase):
         self.assertNotIn('id="post-list"', response_text)
 
     def test_admin_page_for_autheticated_user(self):
-        data = {"email": self.email, "password": self.password}
+        data = {"email": self.admin_user_email, "password": self.admin_user_password}
         self.client.post("/admin", data=data, follow_redirects=True)
 
         response = self.client.get("/admin")
@@ -81,10 +85,26 @@ class AuthTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('id="admin-nav"', response_text)
         self.assertNotIn("Login", response_text)
-        self.assertIn(self.username, response_text)
+        self.assertIn(self.admin_user_username, response_text)
+
+    def test_admin_page_for_comment_only_user(self):
+        email = "ionlycomment@test.com"
+        username = "ionlycomment"
+        password = "i-only-comment"
+        comment_user = User(email=email, username=username, password=password)
+        db.session.add(comment_user)
+        db.session.commit()
+        data = {"email": email, "password": password}
+
+        response = self.client.post("/admin", data=data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Commenters are not allowed to log in!", response_text)
+        self.assertIn("danger", response_text)
 
     def test_successful_logout_for_autheticated_user(self):
-        data = {"email": self.email, "password": self.password}
+        data = {"email": self.admin_user_email, "password": self.admin_user_password}
 
         self.client.post("/admin", data=data, follow_redirects=True)
         response = self.client.get("/logout", follow_redirects=True)
@@ -112,7 +132,7 @@ class AuthTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_create_page_authenticated_user(self):
-        data = {"email": self.email, "password": self.password}
+        data = {"email": self.admin_user_email, "password": self.admin_user_password}
         self.client.post("/admin", data=data, follow_redirects=True)
 
         response = self.client.get("/create")
