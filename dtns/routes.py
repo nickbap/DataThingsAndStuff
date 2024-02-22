@@ -248,7 +248,7 @@ def preview(slug):
 @main.route("/post/<slug>", methods=["GET", "POST"])
 def post(slug):
     recent_post_list = PostModelStorage.get_recent_posts()
-    post = PostModelStorage.get_post_by_slug(slug)
+    post, comments = PostModelStorage.get_post_by_slug(slug, include_comments=True)
     if not post:
         abort(404)
 
@@ -268,7 +268,12 @@ def post(slug):
             flash("Sorry, something went wrong with adding your comment!", "danger")
             return redirect(url_for("main.post", slug=post.slug))
     return render_template(
-        "post.html", recent_post_list=recent_post_list, post=post, slug=slug, form=form
+        "post.html",
+        recent_post_list=recent_post_list,
+        post=post,
+        slug=slug,
+        comments=comments,
+        form=form,
     )
 
 

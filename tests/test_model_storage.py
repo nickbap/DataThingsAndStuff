@@ -38,7 +38,17 @@ class PostModelStorageTestCase(unittest.TestCase):
             )
             self.posts.append(post)
 
-        db.session.add_all(self.posts)
+        user = User(
+            email="test_1@test.com", username="test_user_1", password="test_password_1"
+        )
+
+        comment = Comment(
+            text="A test comment",
+            user=user,
+            post=self.posts[0],
+        )
+
+        db.session.add_all(self.posts + [comment, user])
         db.session.commit()
 
     def tearDown(self):
@@ -136,6 +146,14 @@ class PostModelStorageTestCase(unittest.TestCase):
         post = PostModelStorage.get_post_by_slug("you-wont-findme")
 
         self.assertIsNone(post)
+
+    def test_get_post_by_slug_include_comments(self):
+        post, comments = PostModelStorage.get_post_by_slug(
+            "slug-1", include_comments=True
+        )
+
+        self.assertIsNotNone(post)
+        self.assertIsNotNone(comments)
 
     def test_create_post(self):
         data = {

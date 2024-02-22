@@ -27,7 +27,7 @@
                         {% for comment in comments %}
                         <tr>
                             <td>{{comment.id}}</td>
-                            <td>{{comment.created_at}}</td>
+                            <td><small>{{comment.created_at}}</small></td>
                             <td><a href="{{ url_for('main.post', slug=comment.post.slug) }}">{{comment.post.title}}</a>
                             </td>
                             <td>{{comment.user.username}}</td>

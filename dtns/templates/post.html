@@ -58,6 +58,19 @@
     </div>
     {% endif %}
 
+    {% if comments %}
+    <hr>
+    <div class="col-md-6 col-sm-6">
+        {% for comment in comments%}
+        <div class="mb-4">
+            <small class="py-3"><strong>{{ comment.user.username }}</strong> at <em>{{ comment.created_at }}</em>
+                said:</small>
+            <p>{{ comment.text }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif%}
+
     {% if form %}
     <hr>
     <div class="container-fluid">

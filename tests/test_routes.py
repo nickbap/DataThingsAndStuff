@@ -172,12 +172,24 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertIn("No no, you're not allowed to do that...", response_text)
 
     def test_post_route_as_user(self):
+        user = User(
+            email="test_1@test.com", username="test_user_1", password="test_password_1"
+        )
+        comment = Comment(
+            text="A test comment",
+            user=user,
+            post=self.posts[0],
+        )
+        db.session.add_all([user, comment])
+        db.session.commit()
+
         response = self.client.get("/post/slug-1")
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Title 1", response_text)
         self.assertIn("slug-1", response_text)
+        self.assertIn("A test comment", response_text)
 
     def test_post_route_as_user_for_non_exist_post(self):
         response = self.client.get("/post/cant-find-me")

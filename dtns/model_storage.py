@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from sqlalchemy import asc
 from sqlalchemy import desc
 from sqlalchemy import func
 
@@ -69,11 +70,23 @@ class PostModelStorage(BaseModelStorage):
         return cls.model.query.order_by(desc("updated_at")).all()
 
     @classmethod
-    def get_post_by_slug(cls, slug):
+    def get_post_by_slug(cls, slug, include_comments=False):
         post = cls.filter_(slug=slug)
         if not post:
-            return
+            return (None, None) if include_comments else None
+
+        if include_comments:
+            return cls._get_post_and_comments(post[0])
         return post[0]
+
+    @classmethod
+    def _get_post_and_comments(cls, post):
+        comments = (
+            post.comments.filter_by(state=CommentState.VISIBLE)
+            .order_by(asc("created_at"))
+            .all()
+        )
+        return post, comments
 
     @classmethod
     def create_post(cls, data):
