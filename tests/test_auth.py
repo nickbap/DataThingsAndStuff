@@ -103,6 +103,18 @@ class AuthTestCase(unittest.TestCase):
         self.assertIn("Commenters are not allowed to log in!", response_text)
         self.assertIn("danger", response_text)
 
+    def test_admin_page_for_nonexistent_user(self):
+        data = {"email": "wontfindme@noone.com", "password": "doesnotmatter"}
+
+        response = self.client.post("/admin", data=data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "Something went wrong with your login! Please try again.", response_text
+        )
+        self.assertIn("danger", response_text)
+
     def test_successful_logout_for_autheticated_user(self):
         data = {"email": self.admin_user_email, "password": self.admin_user_password}
 
