@@ -308,7 +308,7 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
 
     def test_temp_preview_as_user_with_token(self):
         post = Post.query.first()
-        token = post_utils.generate_temp_preview_token(post.slug)
+        token = post_utils.generate_temp_token(post.slug)
         url = f"/temp-preview?preview_id={token}"
 
         response = self.client.get(url)
@@ -318,25 +318,25 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertIn(post.title, response_text)
 
     def test_temp_preview_as_user_post_not_found(self):
-        token = post_utils.generate_temp_preview_token("wont-find")
+        token = post_utils.generate_temp_token("wont-find")
         url = f"/temp-preview?preview_id={token}"
 
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 404)
 
-    @mock.patch("dtns.utils.post_utils.validate_temp_preview_token")
-    def test_temp_preview_as_user_link_expired(self, mock_validate_temp_preview_token):
-        mock_validate_temp_preview_token.side_effect = SignatureExpired("")
+    @mock.patch("dtns.utils.post_utils.validate_token")
+    def test_temp_preview_as_user_link_expired(self, mock_validate_token):
+        mock_validate_token.side_effect = SignatureExpired("")
         post = Post.query.first()
-        token = post_utils.generate_temp_preview_token(post.slug)
+        token = post_utils.generate_temp_token(post.slug)
         url = f"/temp-preview?preview_id={token}"
 
         response = self.client.get(url)
         response_text = response.get_data(as_text=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("your preview link has expired", response_text)
+        self.assertIn("this link has expired", response_text)
 
     def test_create_comment_on_post_as_user(self):
         comment_data = {
@@ -432,6 +432,64 @@ class RoutesAsAdminTestCase(BaseRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Comment visibility state updated!", response_text)
         self.assertIn("success", response_text)
+
+    @mock.patch("dtns.model_storage.CommentModelStorage.toggle_visibility_state")
+    def test_admin_comment_toggle_visibility_state_link(
+        self, mock_toggle_visibility_state
+    ):
+        user = User(
+            email="test_1@test.com", username="test_user_1", password="test_password_1"
+        )
+        comment = Comment(
+            text="A test comment",
+            user=user,
+            post=self.posts[0],
+        )
+        db.session.add_all([user, comment])
+        db.session.commit()
+        token = post_utils.generate_temp_token(comment.id)
+        url = f"/admin/comment/toggle/link?token={token}"
+
+        response = self.client.get(url, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Comment visibility state updated!", response_text)
+        self.assertIn("success", response_text)
+        mock_toggle_visibility_state.assert_called_with(comment.id)
+
+    def test_admin_comment_toggle_visibility_state_link_no_token(self):
+        url = "/admin/comment/toggle/link"
+
+        response = self.client.get(url, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 401)
+        self.assertIn("No no, you're not allowed to do that...", response_text)
+
+    @mock.patch("dtns.utils.post_utils.validate_token")
+    def test_admin_comment_toggle_visibility_state_link_expired_link(
+        self, mock_validate_token
+    ):
+        mock_validate_token.side_effect = SignatureExpired("")
+        user = User(
+            email="test_1@test.com", username="test_user_1", password="test_password_1"
+        )
+        comment = Comment(
+            text="A test comment",
+            user=user,
+            post=self.posts[0],
+        )
+        db.session.add_all([user, comment])
+        db.session.commit()
+        token = post_utils.generate_temp_token(comment.id)
+        url = f"/admin/comment/toggle/link?token={token}"
+
+        response = self.client.get(url)
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("this link has expired", response_text)
 
     def test_create_route_as_admin(self):
         response = self.client.get("/create")

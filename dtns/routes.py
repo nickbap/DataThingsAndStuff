@@ -136,6 +136,24 @@ def admin_comment_toggle_visibility_state(comment_id):
     return redirect(url_for("main.admin_comments"))
 
 
+@main.route("/admin/comment/toggle/link", methods=["GET"])
+def admin_comment_toggle_visibility_state_link():
+    token = request.args.get("token")
+    if not token:
+        abort(401)
+
+    try:
+        comment_id = post_utils.validate_token(
+            token, post_utils.TokenType.TOGGLE_COMMENT
+        )
+    except SignatureExpired:
+        return render_template("errors/expired-link.html")
+
+    CommentModelStorage.toggle_visibility_state(comment_id)
+    flash("Comment visibility state updated!", "success")
+    return redirect(url_for("main.admin_comments"))
+
+
 @main.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
@@ -244,7 +262,7 @@ def temp_preview():
         abort(401)
 
     try:
-        slug = post_utils.validate_temp_preview_token(preview_id)
+        slug = post_utils.validate_token(preview_id, post_utils.TokenType.TEMP_PREVIEW)
     except SignatureExpired:
         return render_template("errors/expired-link.html")
 

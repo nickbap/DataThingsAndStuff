@@ -14,6 +14,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = "uploads"
     SENTRY_DSN = os.environ.get("SENTRY_DSN")
+    SERVER_NAME = os.environ.get("SERVER_NAME")
     RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
     RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
 

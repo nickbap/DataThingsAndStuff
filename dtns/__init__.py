@@ -55,6 +55,7 @@ def create_app(testing_config=None):
             return {
                 "db": db,
                 "Comment": models.Comment,
+                "CommentModelStorage": model_storage.CommentModelStorage,
                 "Post": models.Post,
                 "PostModelStorage": model_storage.PostModelStorage,
                 "User": models.User,
