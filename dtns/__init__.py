@@ -2,6 +2,7 @@ import sentry_sdk
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
+from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sentry_sdk.integrations.flask import FlaskIntegration
@@ -10,6 +11,7 @@ from config import config
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+mail = Mail()
 migrate = Migrate()
 toolbar = DebugToolbarExtension()
 
@@ -30,6 +32,7 @@ def create_app(testing_config=None):
 
     db.init_app(app)
     login_manager.init_app(app)
+    mail.init_app(app)
     migrate.init_app(app, db)
     toolbar.init_app(app)
 

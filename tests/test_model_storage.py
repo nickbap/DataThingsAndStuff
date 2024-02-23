@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime
+from unittest import mock
 
 from freezegun import freeze_time
 
@@ -430,7 +431,8 @@ class CommentModelStorageTestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def test_create_comment(self):
+    @mock.patch("dtns.utils.email_utils.send_new_comment_notif")
+    def test_create_comment(self, mock_send_new_comment_notif):
         comment_text = "Just leaving a comment!"
         data = {
             "email": self.email,
@@ -446,6 +448,7 @@ class CommentModelStorageTestCase(unittest.TestCase):
         self.assertEqual(comment.text, comment_text)
         self.assertEqual(comment.user_id, self.user.id)
         self.assertEqual(comment.post_id, self.post.id)
+        mock_send_new_comment_notif.assert_called_with(comment)
 
     def test_toggle_visibility_state(self):
         comment = Comment.query.order_by(-Comment.id).first()

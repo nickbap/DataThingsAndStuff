@@ -10,6 +10,7 @@ from dtns.constants import PostStatus
 from dtns.models import Comment
 from dtns.models import Post
 from dtns.models import User
+from dtns.utils import email_utils
 
 
 class BaseModelStorage:
@@ -218,8 +219,11 @@ class CommentModelStorage(BaseModelStorage):
             data.get("email"), data.get("username")
         )
         comment = Comment(text=data.get("comment"), user=user, post=data.get("post"))
+
         db.session.add(comment)
         db.session.commit()
+
+        email_utils.send_new_comment_notif(comment)
 
     @classmethod
     def toggle_visibility_state(cls, comment_id):

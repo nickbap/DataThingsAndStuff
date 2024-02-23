@@ -2,6 +2,7 @@ email_validator
 Flask
 flask-debugtoolbar
 flask-login
+Flask-Mail
 flask-migrate
 flask-sqlalchemy
 Flask-WTF
