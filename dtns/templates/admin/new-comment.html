@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Comment Posted</title>
+    <style>
+        .flex-container {
+            display: flex;
+        }
+
+        .flex-item {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p>Hey!</p>
+        <p><b><i>{{ comment.user.username }}</i></b> just posted a new comment on <a
+                href="{{ url_for('main.post', slug=comment.post.slug, _external=True) }}">{{ comment.post.title.title() }}</a>:
+        </p>
+        <hr>
+        <div>
+            {{ comment.text }}
+        </div>
+        <hr>
+        <p>Thanks,</p>
+        <p>Data Things and Stuff</p>
+        <hr>
+        <div class="flex-container">
+            <div class="flex-item">
+                <a href="{{ url_for('main.post', slug=comment.post.slug, _external=True) }}" target="_blank"
+                    rel="noopener noreferrer">
+                    <button type="button">View Post</button>
+                </a>
+            </div>
+            <div class="flex-item">
+                <a href="{{ toggle_url }}" target="_blank" rel="noopener noreferrer">
+                    <button type="button">Hide Comment</button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
