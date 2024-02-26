@@ -151,7 +151,7 @@ def admin_comment_toggle_visibility_state_link():
 
     CommentModelStorage.toggle_visibility_state(comment_id)
     flash("Comment visibility state updated!", "success")
-    return redirect(url_for("main.admin_comments"))
+    return redirect(url_for("main.admin"))
 
 
 @main.route("/create", methods=["GET", "POST"])
