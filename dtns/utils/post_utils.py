@@ -5,6 +5,7 @@ from flask import url_for
 from itsdangerous.url_safe import URLSafeTimedSerializer
 
 TEMP_PREVIEW_MAX_AGE = 30 * 60
+TOGGLE_COMMENT_MAX_AGE = 24 * 60 * 60
 
 
 class TokenType:
@@ -12,7 +13,10 @@ class TokenType:
     TOGGLE_COMMENT = "toggle-comment"
 
 
-TOKEN_TYPE_TO_MAX_AGE_MAP = {TokenType.TEMP_PREVIEW: TEMP_PREVIEW_MAX_AGE}
+TOKEN_TYPE_TO_MAX_AGE_MAP = {
+    TokenType.TEMP_PREVIEW: TEMP_PREVIEW_MAX_AGE,
+    TokenType.TOGGLE_COMMENT: TOGGLE_COMMENT_MAX_AGE,
+}
 
 
 def aggregate_and_sort_posts_by_month_year(posts):
@@ -45,5 +49,5 @@ def generate_toggle_comment_url(comment):
 
 def validate_token(token, token_type):
     s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
-    max_age = TOKEN_TYPE_TO_MAX_AGE_MAP.get(token_type)
+    max_age = TOKEN_TYPE_TO_MAX_AGE_MAP[token_type]
     return s.loads(token, max_age=max_age)
