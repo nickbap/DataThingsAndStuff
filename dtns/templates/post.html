@@ -63,8 +63,10 @@
     <div class="col-md-6 col-sm-6">
         {% for comment in comments%}
         <div class="mb-4">
-            <small class="py-3"><strong>{{ comment.user.username }}</strong> at <em>{{ comment.created_at }}</em>
-                said:</small>
+            <small class="py-3"><strong>{{ comment.user.username }}</strong></small>
+            <br>
+            <small><em>{{ moment(comment.created_at).fromNow() }}</em>
+            </small>
             <p>{{ comment.text }}</p>
         </div>
         {% endfor %}

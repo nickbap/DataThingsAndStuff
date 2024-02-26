@@ -4,6 +4,7 @@ flask-debugtoolbar
 flask-login
 Flask-Mail
 flask-migrate
+flask-moment
 flask-sqlalchemy
 Flask-WTF
 markdown-it-py
