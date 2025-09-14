@@ -701,3 +701,4 @@ class ServeUploadTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.mimetype, "image/jpeg")
+        self.assertIn("max-age=3600", response.headers.get("Cache-Control"))

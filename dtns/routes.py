@@ -322,7 +322,7 @@ def download_file(name):
     upload_folder_path = os.path.join(
         current_app.static_folder, current_app.config["UPLOAD_FOLDER"]
     )
-    return send_from_directory(upload_folder_path, name)
+    return send_from_directory(upload_folder_path, name, max_age=3600)
 
 
 @main.route("/image-manager", methods=["GET", "POST"])
