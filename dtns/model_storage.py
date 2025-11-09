@@ -196,6 +196,7 @@ class UserModelStorage(BaseModelStorage):
                 "email": user.email,
                 "username": user.username,
                 "is_admin": user.is_admin,
+                "num_comments": user.comments.count(),
             }
             for user in users
         ]

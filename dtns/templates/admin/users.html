@@ -20,6 +20,7 @@
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
                             <th scope="col">Is Admin</th>
+                            <th scope="col">Number of Comments</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +31,7 @@
                             <td>{{user.get('username')}}</td>
                             <td>{{user.get('email')}}</td>
                             <td>{{user.get('is_admin')}}</td>
+                            <td>{{user.get('num_comments')}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
