@@ -372,6 +372,7 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertIn(
             "Sorry, something went wrong with adding your comment!", response_text
         )
+        self.assertIn("This is a comment!", response_text)
         self.assertIn("danger", response_text)
 
 

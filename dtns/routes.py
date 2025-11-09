@@ -306,7 +306,14 @@ def post(slug):
             return redirect(url_for("main.post", slug=post.slug))
         except Exception:
             flash("Sorry, something went wrong with adding your comment!", "danger")
-            return redirect(url_for("main.post", slug=post.slug))
+            return render_template(
+                "post.html",
+                recent_post_list=recent_post_list,
+                post=post,
+                slug=slug,
+                comments=comments,
+                form=form,
+            )
     return render_template(
         "post.html",
         recent_post_list=recent_post_list,
