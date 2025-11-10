@@ -1,3 +1,5 @@
+import logging
+
 from threading import Thread
 
 from flask import current_app
@@ -28,10 +30,17 @@ def send_email(subject, sender, recipients, msg_body=None, msg_html=None):
 
 
 def send_new_comment_notif(comment):
+    subject = f"New Comment from: {comment.user.username}"
+    recipient = current_app.config["SITE_ADMIN"]
+
+    if current_app.debug:
+        print(f"A {subject} email would be sent from {recipient}")
+        return
+
     send_email(
-        f"New Comment from: {comment.user.username}",
+        subject,
         ("Data Things and Stuff", current_app.config["MAIL_USERNAME"]),
-        [current_app.config["SITE_ADMIN"]],
+        [recipient],
         None,
         render_template(
             "admin/new-comment.html",
