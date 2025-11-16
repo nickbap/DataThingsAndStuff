@@ -1,5 +1,3 @@
-import logging
-
 from threading import Thread
 
 from flask import current_app
