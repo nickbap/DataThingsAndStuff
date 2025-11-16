@@ -3,9 +3,14 @@ from datetime import datetime
 from flask import current_app
 from flask import url_for
 from itsdangerous.url_safe import URLSafeTimedSerializer
+from langdetect import detect
 
 TEMP_PREVIEW_MAX_AGE = 30 * 60
 TOGGLE_COMMENT_MAX_AGE = 24 * 60 * 60
+
+
+class UnsupportedLanguageError(Exception):
+    pass
 
 
 class TokenType:
@@ -51,3 +56,9 @@ def validate_token(token, token_type):
     s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
     max_age = TOKEN_TYPE_TO_MAX_AGE_MAP[token_type]
     return s.loads(token, max_age=max_age)
+
+
+def validate_comment_text(text):
+    lang = detect(text)
+    if lang != "en":
+        raise UnsupportedLanguageError(f"Language of {lang} is not supported.")

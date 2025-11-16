@@ -375,6 +375,27 @@ class RoutesAsUserTestCase(BaseRouteTestCase):
         self.assertIn("This is a comment!", response_text)
         self.assertIn("danger", response_text)
 
+    @mock.patch("dtns.utils.post_utils.validate_comment_text")
+    def test_create_comment_on_post_as_user_handle_unsupported_language_error(
+        self, mock_validate_comment_text
+    ):
+        mock_validate_comment_text.side_effect = post_utils.UnsupportedLanguageError
+        comment_data = {
+            "email": "foo@bar.com",
+            "username": "foobar",
+            "comment": "This is a comment!",
+        }
+
+        response = self.client.post(
+            "/post/slug-1", data=comment_data, follow_redirects=True
+        )
+        response_text = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Sorry, this language is not supported!", response_text)
+        self.assertIn("This is a comment!", response_text)
+        self.assertIn("danger", response_text)
+
 
 class RoutesAsAdminTestCase(BaseRouteTestCase):
     def setUp(self):

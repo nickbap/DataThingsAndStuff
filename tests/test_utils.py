@@ -12,6 +12,7 @@ from dtns.models import Post
 from dtns.utils import image_utils
 from dtns.utils import post_utils
 
+
 NUM_POSTS = 10
 
 
@@ -224,3 +225,12 @@ class PostUtilsTestCase(unittest.TestCase):
 
         self.assertEqual(post_archive, ["December 2021", "November 2021"])
         self.assertEqual(len(post_archive), 2)
+
+    def test_validate_comment_text_exception(self):
+        with self.assertRaises(post_utils.UnsupportedLanguageError):
+            post_utils.validate_comment_text("Ein, zwei, drei, vier")
+
+    def test_validate_comment_text(self):
+        post_utils.validate_comment_text(
+            "War doesn't show who's right, just who's left."
+        )

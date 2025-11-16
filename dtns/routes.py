@@ -30,6 +30,7 @@ from dtns.model_storage import PostModelStorage
 from dtns.model_storage import UserModelStorage
 from dtns.utils import image_utils
 from dtns.utils import post_utils
+from dtns.utils.post_utils import UnsupportedLanguageError
 
 main = Blueprint("main", __name__)
 
@@ -304,8 +305,11 @@ def post(slug):
             CommentModelStorage.create_comment(data)
             flash("Your comment has been added!", "success")
             return redirect(url_for("main.post", slug=post.slug))
-        except Exception:
-            flash("Sorry, something went wrong with adding your comment!", "danger")
+        except Exception as e:
+            if isinstance(e, UnsupportedLanguageError):
+                flash("Sorry, this language is not supported!", "danger")
+            else:
+                flash("Sorry, something went wrong with adding your comment!", "danger")
             return render_template(
                 "post.html",
                 recent_post_list=recent_post_list,

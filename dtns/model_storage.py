@@ -11,6 +11,7 @@ from dtns.models import Comment
 from dtns.models import Post
 from dtns.models import User
 from dtns.utils import email_utils
+from dtns.utils import post_utils
 
 
 class BaseModelStorage:
@@ -216,6 +217,8 @@ class CommentModelStorage(BaseModelStorage):
 
     @classmethod
     def create_comment(cls, data):
+        post_utils.validate_comment_text(data.get("comment"))
+
         user = UserModelStorage.get_or_create_comment_user(
             data.get("email"), data.get("username")
         )
