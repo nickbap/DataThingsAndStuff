@@ -121,7 +121,11 @@ def admin_users():
 @main.route("/admin/comments", methods=["GET"])
 @login_required
 def admin_comments():
-    comments = CommentModelStorage.get_all()
+    user_id = request.args.get("user_id", type=int)
+    if user_id is not None:
+        comments = CommentModelStorage.get_all_by_user_id(user_id=user_id)
+    else:
+        comments = CommentModelStorage.get_all()
     return render_template(
         "admin/comments.html",
         comments=comments,

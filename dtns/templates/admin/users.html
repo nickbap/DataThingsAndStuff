@@ -31,7 +31,9 @@
                             <td>{{user.get('username')}}</td>
                             <td>{{user.get('email')}}</td>
                             <td>{{user.get('is_admin')}}</td>
-                            <td>{{user.get('num_comments')}}</td>
+                            <td><a
+                                    href="{{ url_for('main.admin_comments', user_id=user.id) }}">{{user.get('num_comments')}}</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

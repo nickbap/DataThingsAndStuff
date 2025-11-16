@@ -409,6 +409,9 @@ class CommentModelStorageTestCase(unittest.TestCase):
         self.user = User(
             email=self.email, username=self.username, password="test_password_1"
         )
+        self.user2 = User(
+            email="foo@bar.com", username="foobar", password="test_password_2"
+        )
 
         self.post = Post(
             title="Title 1",
@@ -420,6 +423,11 @@ class CommentModelStorageTestCase(unittest.TestCase):
         self.comment = Comment(
             text="A test comment",
             user=self.user,
+            post=self.post,
+        )
+        self.comment2 = Comment(
+            text="A test comment from a different user",
+            user=self.user2,
             post=self.post,
         )
 
@@ -478,3 +486,13 @@ class CommentModelStorageTestCase(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             CommentModelStorage.toggle_visibility_state(self.comment.id)
+
+    def test_get_all_by_user_id(self):
+        db.session.add_all([self.comment, self.comment2])
+        db.session.commit()
+        self.assertEqual(len(CommentModelStorage.get_all()), 2)
+
+        comments = CommentModelStorage.get_all_by_user_id(self.user2.id)
+
+        self.assertEqual(len(comments), 1)
+        self.assertEqual(comments[0].text, self.comment2.text)

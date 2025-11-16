@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 from datetime import datetime
 
 from werkzeug.security import generate_password_hash
@@ -188,6 +189,7 @@ class CommentModelTestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
+    @mock.patch("dtns.utils.post_utils.validate_comment_text", new=mock.Mock())
     def test_create_comment(self):
         c = Comment(text="My first test comment", user=self.user, post=self.post)
         db.session.add(c)

@@ -246,3 +246,7 @@ class CommentModelStorage(BaseModelStorage):
 
         db.session.add(comment)
         db.session.commit()
+
+    @classmethod
+    def get_all_by_user_id(cls, user_id):
+        return cls.filter_(user_id=user_id)
